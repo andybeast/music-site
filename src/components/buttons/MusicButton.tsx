@@ -12,7 +12,7 @@ interface MusicButtonProps {
 const MusicButton: React.FC<MusicButtonProps> = ({ children }) => {
   return (
     <StyledWrapper>
-      <Link href="/">
+      <Link href="/info">
       <button className="button button-item">
         <span className="button-bg">
           <span className="button-bg-layers">
@@ -22,8 +22,8 @@ const MusicButton: React.FC<MusicButtonProps> = ({ children }) => {
           </span>
         </span>
         <span className="button-inner">
-          <span className="button-inner-static">Browse</span>
-          <span className="button-inner-hover">Music</span>
+          <span className="button-inner-static font-sans">Info</span>
+          <span className="button-inner-hover font-sans">info</span>
         </span>
       </button>
       </Link>
@@ -58,7 +58,7 @@ const StyledWrapper = styled.div`
 
   .button-item .button-bg {
     border-color: rgba(255, 208, 116);
-    background-color: rgba(255, 208, 116);
+    background-color: rgba(23, 241, 209);
   }
 
   .button-inner,

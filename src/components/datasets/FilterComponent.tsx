@@ -1,26 +1,34 @@
-import React from 'react'
+import React from 'react';
 
 interface FilterComponentProps {
-  searchTerm: string
-  setSearchTerm: (term: string) => void
-  genre: string
-  setGenre: (genre: string) => void
-  maxPrice: number
-  setMaxPrice: (price: number) => void
-  genres: string[]
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  selectedGenres: string[];
+  setSelectedGenres: (genres: string[]) => void;
+  maxPrice: number;
+  setMaxPrice: (price: number) => void;
+  genres: string[];
 }
 
 const FilterComponent: React.FC<FilterComponentProps> = ({
   searchTerm,
   setSearchTerm,
-  genre,
-  setGenre,
+  selectedGenres,
+  setSelectedGenres,
   maxPrice,
   setMaxPrice,
   genres
 }) => {
+  const handleGenreChange = (genre: string) => {
+    if (selectedGenres.includes(genre)) {
+      setSelectedGenres(selectedGenres.filter(g => g !== genre));
+    } else {
+      setSelectedGenres([...selectedGenres, genre]);
+    }
+  };
+
   return (
-    <div className="w-64 p-4 bg-white shadow-md rounded-lg">
+    <div className="w-full p-4 bg-white shadow-md rounded-lg">
       <h2 className="text-lg font-semibold mb-4">Filters</h2>
       <div className="space-y-4">
         <div>
@@ -37,32 +45,32 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
           />
         </div>
         <div>
-          <label htmlFor="genre" className="block text-sm font-medium text-gray-700 mb-1">
-            Genre
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Genres
           </label>
-          <select
-            id="genre"
-            value={genre}
-            onChange={(e) => setGenre(e.target.value)}
-            className="w-full p-2 border rounded-md"
-          >
-            <option value="">All Genres</option>
-            {genres.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
+          <div className="space-y-2">
+            {genres.map((genre) => (
+              <label key={genre} className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={selectedGenres.includes(genre)}
+                  onChange={() => handleGenreChange(genre)}
+                  className="mr-2"
+                />
+                {genre}
+              </label>
             ))}
-          </select>
+          </div>
         </div>
         <div>
           <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-            Max Price: ${maxPrice}
+            Max Price: ${maxPrice.toFixed(1)}
           </label>
           <input
             type="range"
             id="price"
             min={0}
-            max={100}
+            max={10}
             step={1}
             value={maxPrice}
             onChange={(e) => setMaxPrice(Number(e.target.value))}
@@ -71,7 +79,7 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default FilterComponent
+export default FilterComponent;

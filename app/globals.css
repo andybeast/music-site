@@ -2,15 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+
 :root {
   --background: #f9f4ce;
-  --foreground: #171717;
+  --foreground: #000000;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #8e8875;
-    --foreground: #f0de85;
+    --background: #f2e0a6;
+    --foreground: #000000;
   }
 }
 
@@ -19,3 +22,14 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+/* In a global CSS file like styles.css or in your tailwind.config.css file */
+@font-face {
+  font-family: 'Roboto';
+  src: url('/fonts/roboto.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; /* Optional: ensures text is displayed while the font is loading */
+}
+

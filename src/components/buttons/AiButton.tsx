@@ -8,7 +8,7 @@ interface BrowseButtonProps {
   children: React.ReactNode
 }
 
-const BrowseButton: React.FC<BrowseButtonProps> = ({ children }) => {
+const AiButton: React.FC<BrowseButtonProps> = ({ children }) => {
   return (
     <StyledWrapper>
       <Link href="/browse">
@@ -21,8 +21,8 @@ const BrowseButton: React.FC<BrowseButtonProps> = ({ children }) => {
           </span>
         </span>
         <span className="button-inner">
-          <span className="button-inner-static font-sans">Browse</span>
-          <span className="button-inner-hover font-sans">Browse</span>
+          <span className="button-inner-static font-sans">   AI    </span>
+          <span className="button-inner-hover font-sans">AI</span>
         </span>
       </button>
       </Link>
@@ -57,7 +57,7 @@ const StyledWrapper = styled.div`
 
   .button-item .button-bg {
     border-color: rgba(255, 208, 116);
-    background-color: rgba(0, 123, 255);
+    background-color: rgba(245, 255, 0, 1);
   }
 
   .button-inner,
@@ -117,14 +117,14 @@ const StyledWrapper = styled.div`
   }
 
   .button-bg-layer.-purple {
-  background-color: rgba(34, 193, 34)  ; /* Changed to blue */
+  background-color: rgba(255, 0, 0, 1); /* Changed to red */
 }
 
 .button-bg-layer.-green {
-  background-color: rgba(0, 123, 255); /* Changed to green */
+  background-color: rgba(245, 255, 0, 1); /* Changed to yellow */
 }
 
-  .button-bg-layer.-yellow {
+    .button-bg-layer.-yellow {
     --tw-bg-opacity: 1;
     background-color: rgba(255, 208, 116, var(--tw-bg-opacity));
   }
@@ -165,4 +165,4 @@ const StyledWrapper = styled.div`
     transform: scale(1);
   }`;
 
-export default BrowseButton;
+export default AiButton;
