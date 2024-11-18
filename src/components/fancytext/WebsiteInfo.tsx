@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Music, Download, HelpCircle } from 'lucide-react'
 
+
+
 interface CountUpProps {
     end: number
     duration?: number
@@ -117,7 +119,8 @@ const WebsiteInfo: React.FC = () => {
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
     return (
-        <div className="bg-gradient-to-br from-yellow-100 to-yellow-200 p-4 sm:p-6 md:p-8 rounded-lg shadow-lg">
+        
+        <div className="p-4 sm:p-6 md:p-8 rounded-lg shadow-lg">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-4 sm:mb-6 md:mb-8">
                 <AnimatedSection>
                     <motion.div
@@ -209,6 +212,7 @@ const WebsiteInfo: React.FC = () => {
                 </div>
             </AnimatedSection>
         </div>
+       
     )
 }
 

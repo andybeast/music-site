@@ -4,6 +4,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
+
 // Keyframes for glitch effect
 const glitch = keyframes`
   1% { transform: rotateX(10deg) skewX(90deg); }
@@ -29,6 +30,7 @@ const StyledGlitchContainer = styled.div`
   justify-content: center;
   text-align: center;
   margin: auto; // Center if needed
+  z-index: -1; // Z INDEX
 `;
 
 const GlitchText = styled.div`
@@ -50,20 +52,20 @@ const GlitchText = styled.div`
 
   &::before {
     left: -2px;
-    text-shadow: -5px 0 magenta;
+    text-shadow: -5px 0 rgb(250, 204, 21);
     animation: ${noise1} 3s linear infinite;
   }
 
   &::after {
     left: 2px;
-    text-shadow: -5px 0 lightgreen;
+    text-shadow: -5px 0 yellow;
     animation: ${noise2} 3s linear infinite;
   }
 `;
 
 const GlowText = styled(GlitchText)`
   color: transparent;
-  text-shadow: 0 0 1000px rgb(223, 191, 191);
+  text-shadow: 0 0 1000px rgb(223, 153, 77);
   position: absolute;
 `;
 
@@ -80,9 +82,10 @@ const Subtitle = styled.p`
 // Main Component
 const GlitchComponent = () => {
   return (
+    
     <StyledGlitchContainer>
-      <GlitchText data-text="Welcome">Welcome</GlitchText>
-      <GlowText data-text="Welcome">Welcome</GlowText>
+      <GlitchText data-text="MusAI">MusAI</GlitchText>
+      <GlowText data-text="MusAI">MusAI</GlowText>
       
     </StyledGlitchContainer>
   );

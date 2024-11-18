@@ -1,31 +1,56 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
+import { motion } from 'framer-motion'
+
 
 const TextWithAnimation: React.FC = () => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+
+  const textItems = [
+    { text: 'Music', color: 'text-purple-700' },
+    { text: 'Beats', color: 'text-pink-700' },
+    { text: 'Tunes', color: 'text-blue-700' },
+  ]
+
   return (
-    <div className="flex justify-center items-center p-2 sm:p-2">
-      <div
-        className="relative w-[300px] h-[200px] sm:w-[800px] sm:h-[600px] flex flex-col justify-center items-center overflow-hidden"
-        style={{
-          background: 'radial-gradient(circle, #ffcc24 50%, #ffcc24 50%)',
-          borderRadius: '50% / 50%',
-        }}
+    <div className="min-h-screen w-screen  flex flex-col justify-center items-center p-4">
+
+      
+
+      <motion.p
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-8 text-white text-2xl md:text-4xl font-bold font-sans italic"
       >
-        <p className="mb-4 sm:mb-24 text-black text-xl sm:text-3xl font-bold font-sans animate-fade-in italic">
-          Find your...
-        </p>
-        <div className="flex items-center gap-16">
-          <div className="text-3xl sm:text-6xl font-semibold font-sans animate-slide-in-1 animation-delay-300 text-black text-shadow">
-            Music
-          </div>
-          <div className="text-3xl sm:text-6xl font-semibold font-sans animate-slide-in-2 animation-delay-500 text-black text-shadow">
-            Beats
-          </div>
-          <div className="text-3xl sm:text-6xl font-semibold font-sans animate-slide-in-3 animation-delay-600 text-black text-shadow">
-            Tunes
-          </div>
-        </div>
+        Find your...
+      </motion.p>
+      <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-16 w-full">
+        {textItems.map((item, index) => (
+          <motion.div
+            key={item.text}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.2 }}
+            className="relative"
+          >
+            <motion.div
+              className={`text-4xl md:text-6xl font-bold ${item.color} cursor-pointer transition-all duration-300 ease-in-out`}
+              whileHover={{ scale: 1.1 }}
+              onHoverStart={() => setHoveredIndex(index)}
+              onHoverEnd={() => setHoveredIndex(null)}
+            >
+              {item.text}
+            </motion.div>
+            {hoveredIndex === index && (
+              <motion.div
+                className="absolute -bottom-2 left-0 right-0 h-1 bg-white"
+                layoutId="underline"
+              />
+            )}
+          </motion.div>
+        ))}
       </div>
     </div>
   )

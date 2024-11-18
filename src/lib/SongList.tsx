@@ -87,6 +87,116 @@ const songs: Song[] = [
     genres: ["Lofi", "Reggae"],
     price: 0.99
   },
+  {
+    id: 8,
+    title: "Gingerbread Tunes",
+    image: "https://i.ibb.co/YDxMFz8/LUnar-Boom.jpg",
+    link: "/christmaslofi",
+    album: "Christmas Lofi",
+    strength: 0.99,
+    genres: ["Lofi", "RnB", "Christmas"],
+    price: 0.99
+  },
+  {
+    id: 9,
+    title: "Glühwein Nights",
+    image: "https://i.ibb.co/YDxMFz8/LUnar-Boom.jpg",
+    link: "/christmaslofi",
+    album: "Christmas Lofi",
+    strength: 0.99,
+    genres: ["Lofi", "RnB", "Christmas"],
+    price: 0.99
+  },
+  {
+    id: 10,
+    title: "Warm Darkness",
+    image: "https://i.ibb.co/YDxMFz8/LUnar-Boom.jpg",
+    link: "/christmaslofi",
+    album: "Christmas Lofi",
+    strength: 0.99,
+    genres: ["Lofi", "RnB", "Christmas"],
+    price: 0.99
+  },
+  {
+    id: 11,
+    title: "Soft Snow",
+    image: "https://i.ibb.co/YDxMFz8/LUnar-Boom.jpg",
+    link: "/christmaslofi",
+    album: "Christmas Lofi",
+    strength: 0.99,
+    genres: ["Lofi", "RnB", "Christmas"],
+    price: 0.99
+  },
+  {
+    id: 12,
+    title: "Fireplace Heat",
+    image: "https://i.ibb.co/YDxMFz8/LUnar-Boom.jpg",
+    link: "/christmaslofi",
+    album: "Christmas Lofi",
+    strength: 1.5,
+    genres: ["Lofi", "RnB", "Christmas"],
+    price: 1.5
+  },
+  {
+    id: 13,
+    title: "Gliese 12 b",
+    image: "https://i.ibb.co/TvxymD5/soft-shadow.jpg",
+    link: "/planetarylofi",
+    album: "Planetary Lofi",
+    strength: 0.99,
+    genres: ["Lofi", "RnB", "Electro"],
+    price: 0.99
+  },
+  {
+    id: 14,
+    title: "Kepler 22b",
+    image: "https://i.ibb.co/TvxymD5/soft-shadow.jpg",
+    link: "/planetarylofi",
+    album: "Planetary Lofi",
+    strength: 0.99,
+    genres: ["Lofi", "RnB", "Electro"],
+    price: 0.99
+  },
+  {
+    id: 15,
+    title: "Luyten b",
+    image: "https://i.ibb.co/TvxymD5/soft-shadow.jpg",
+    link: "/planetarylofi",
+    album: "Planetary Lofi",
+    strength: 0.99,
+    genres: ["Lofi", "RnB", "Electro"],
+    price: 0.99
+  },
+  {
+    id: 16,
+    title: "Ross 128",
+    image: "https://i.ibb.co/TvxymD5/soft-shadow.jpg",
+    link: "/planetarylofi",
+    album: "Planetary Lofi",
+    strength: 0.99,
+    genres: ["Lofi", "RnB", "Electro"],
+    price: 0.99
+  },
+  {
+    id: 17,
+    title: "earth",
+    image: "https://i.ibb.co/TvxymD5/soft-shadow.jpg",
+    link: "/planetarylofi",
+    album: "Planetary Lofi",
+    strength: 1,
+    genres: ["Lofi", "RnB", "Electro"],
+    price: 1
+  },
+  {
+    id: 18,
+    title: "mars",
+    image: "https://i.ibb.co/TvxymD5/soft-shadow.jpg",
+    link: "/planetarylofi",
+    album: "Planetary Lofi",
+    strength: 1,
+    genres: ["Lofi", "RnB", "Electro"],
+    price: 1
+  },
 ];
 
 const EmptyCard: React.FC = () => (
@@ -115,7 +225,7 @@ const SongsList: React.FC = () => {
   }, [searchTerm, selectedGenres, maxPrice]);
 
   return (
-    <div className="flex flex-col md:flex-row">
+    <div className="flex flex-col md:flex-row py-8 px-6">
       <div className="md:w-64 mb-4 md:mb-0 md:mr-4">
         <FilterComponent
           searchTerm={searchTerm}
@@ -131,7 +241,7 @@ const SongsList: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredSongs.length > 0 ? (
             filteredSongs.map(song => (
-              <div key={song.id} className="w-full aspect-square">
+              <div key={song.id} className="w-full aspect-square relative z-0">
                 <SongCard 
                   song={song} 
                   currentlyPlaying={currentlyPlaying} 

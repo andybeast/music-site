@@ -1,23 +1,20 @@
 // Import necessary components
+'use client'
 
-import RootLayout from '../layout';
 import SongsList from '@/src/lib/SongList'; // Adjust this path based on where SongsList is located
 
 
-export default function Home() {
+export default function Browse() {
   return (
-    <RootLayout>
-      <div className="flex justify-center">
-        {/* Other content can go here */}
-        
-      </div>
+    
       
-      <div className="flex justify-center mb-64">
+      
+      <div className="flex justify-center bg-gradient-to-br from-yellow-100 to-orange-400 relative z-0">
         {/* Add the SongsList component here */}
         <SongsList />
       </div>
 
       
-    </RootLayout>
+   
   );
 }

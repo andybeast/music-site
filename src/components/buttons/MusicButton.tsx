@@ -22,8 +22,8 @@ const MusicButton: React.FC<MusicButtonProps> = ({ children }) => {
           </span>
         </span>
         <span className="button-inner">
-          <span className="button-inner-static font-sans">Info</span>
-          <span className="button-inner-hover font-sans">info</span>
+          <span className="button-inner-static">Info</span>
+          <span className="button-inner-hover">Info</span>
         </span>
       </button>
       </Link>
@@ -44,7 +44,7 @@ const StyledWrapper = styled.div`
     border-radius: 9999px;
     padding-left: 2rem;
     padding-right: 2rem;
-    font-family: Segoe UI;
+    font-family: Arial;
     font-size: 1.2rem;
     font-weight: 640;
     color: #fafaf6;
@@ -127,7 +127,7 @@ const StyledWrapper = styled.div`
 
   .button-bg-layer.-yellow {
     --tw-bg-opacity: 1;
-    background-color: rgba(255, 208, 116, var(--tw-bg-opacity));
+    background-color: rgba(255, 165, 0, var(--tw-bg-opacity));
   }
 
   .button:hover .button-inner-static {

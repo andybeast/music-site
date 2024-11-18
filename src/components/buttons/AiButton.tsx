@@ -11,7 +11,7 @@ interface BrowseButtonProps {
 const AiButton: React.FC<BrowseButtonProps> = ({ children }) => {
   return (
     <StyledWrapper>
-      <Link href="/browse">
+      <Link href="/ai">
       <button className="button button-item">
         <span className="button-bg">
           <span className="button-bg-layers">
@@ -21,8 +21,8 @@ const AiButton: React.FC<BrowseButtonProps> = ({ children }) => {
           </span>
         </span>
         <span className="button-inner">
-          <span className="button-inner-static font-sans">   AI    </span>
-          <span className="button-inner-hover font-sans">AI</span>
+          <span className="button-inner-static">MusAI </span>
+          <span className="button-inner-hover">MusAI</span>
         </span>
       </button>
       </Link>
@@ -126,7 +126,7 @@ const StyledWrapper = styled.div`
 
     .button-bg-layer.-yellow {
     --tw-bg-opacity: 1;
-    background-color: rgba(255, 208, 116, var(--tw-bg-opacity));
+    background-color: rgba(255, 165, 0, var(--tw-bg-opacity));
   }
 
   .button:hover .button-inner-static {

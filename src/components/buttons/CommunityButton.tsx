@@ -11,7 +11,7 @@ interface BrowseButtonProps {
 const BrowseButton: React.FC<BrowseButtonProps> = ({ children }) => {
   return (
     <StyledWrapper>
-      <Link href="/browse">
+      <Link href="/community">
       <button className="button button-item">
         <span className="button-bg">
           <span className="button-bg-layers">
@@ -21,8 +21,8 @@ const BrowseButton: React.FC<BrowseButtonProps> = ({ children }) => {
           </span>
         </span>
         <span className="button-inner">
-          <span className="button-inner-static">Browse</span>
-          <span className="button-inner-hover">Browse</span>
+          <span className="button-inner-static">Community</span>
+          <span className="button-inner-hover">Community</span>
         </span>
       </button>
       </Link>
@@ -57,7 +57,7 @@ const StyledWrapper = styled.div`
 
   .button-item .button-bg {
     border-color: rgba(255, 208, 116);
-    background-color: rgba(0, 123, 255);
+    background-color: rgba(107, 33, 168, 1);
   }
 
   .button-inner,
@@ -117,16 +117,18 @@ const StyledWrapper = styled.div`
   }
 
   .button-bg-layer.-purple {
-  background-color: rgba(34, 193, 34)  ; /* Changed to blue */
+  background-color: rgba(255, 255, 255, 1);
+  ; /* Changed to blue */
 }
 
 .button-bg-layer.-green {
-  background-color: rgba(0, 123, 255); /* Changed to green */
+  background-color: rgba(225, 225, 225, 1);
+
 }
 
   .button-bg-layer.-yellow {
     --tw-bg-opacity: 1;
-    background-color: rgba(255, 165, 0, var(--tw-bg-opacity));
+    background-color: rgba(107, 80, 168, var(--tw-bg-opacity));
   }
 
   .button:hover .button-inner-static {

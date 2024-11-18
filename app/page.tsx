@@ -1,31 +1,40 @@
-import RootLayout from './layout';
-import GlitchComponent from '@/src/components/fancytext/GlitchText';
+
+'use client'
+
 import TextWithAnimation from '@/src/components/fancytext/MainPageText';
 import WebsiteInfo from '@/src/components/fancytext/WebsiteInfo';
 
 
 
 
+
 export default function Home() {
   return (
-    <RootLayout>
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <GlitchComponent />
-
-        
-
-        <TextWithAnimation></TextWithAnimation>
-
-        <WebsiteInfo />
-
-      </div>
-      
-
-      
 
     
+    <div className="flex flex-col items-center justify-center w-full bg-gradient-to-br from-yellow-300 to-orange-400">
+      
+      
+      
       
      
-    </RootLayout>
+      
+      <TextWithAnimation></TextWithAnimation>
+      
+
+      
+      <div className="w-screen">
+        <WebsiteInfo />
+      </div>
+
+
+
+    </div>
+
+
+
+
+
+
   );
 }
