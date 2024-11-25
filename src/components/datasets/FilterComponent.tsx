@@ -28,11 +28,11 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
   };
 
   return (
-    <div className="w-full p-4 bg-white shadow-md rounded-lg">
-      <h2 className="text-lg font-semibold mb-4">Filters</h2>
+    <div className="w-full p-4 bg-black shadow-md rounded-lg">
+      <h2 className="text-lg font-semibold mb-4 text-white">Filters</h2>
       <div className="space-y-4">
         <div>
-          <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="search" className="block text-sm font-medium text-gray-200 mb-1">
             Search
           </label>
           <input
@@ -45,12 +45,12 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-white mb-1">
             Genres
           </label>
           <div className="space-y-2">
             {genres.map((genre) => (
-              <label key={genre} className="flex items-center">
+              <label key={genre} className="flex items-center text-gray-200">
                 <input
                   type="checkbox"
                   checked={selectedGenres.includes(genre)}
@@ -63,7 +63,7 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
           </div>
         </div>
         <div>
-          <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="price" className="block text-sm font-medium text-white mb-1">
             Max Price: ${maxPrice.toFixed(1)}
           </label>
           <input

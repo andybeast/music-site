@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useEffect, useState } from 'react'
 
 interface Dot {
@@ -9,26 +11,36 @@ interface Dot {
   speedY: number
 }
 
-const AnimatedBackground: React.FC = () => {
+interface AnimatedBackgroundProps {
+  color?: string // Optional color prop with a default value of white
+}
+
+const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({ color = 'white' }) => {
   const [dots, setDots] = useState<Dot[]>([])
+  const [isClient, setIsClient] = useState(false) // Track if it's the client
 
   useEffect(() => {
+    setIsClient(true) // Set to true on the client side
+
     const createDots = () => {
       const newDots: Dot[] = []
       for (let i = 0; i < 50; i++) {
+        // Generate random values for dots
         newDots.push({
           id: i,
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-          size: Math.random() * 3 + 1,
-          speedX: Math.random() * 0.5 - 0.25,
-          speedY: Math.random() * 0.5 - 0.25
+          x: Math.random() * window.innerWidth,  // Random position X
+          y: Math.random() * window.innerHeight, // Random position Y
+          size: Math.random() * 3 + 1,  // Random size
+          speedX: Math.random() * 0.5 - 0.25, // Random speed X
+          speedY: Math.random() * 0.5 - 0.25, // Random speed Y
         })
       }
       setDots(newDots)
     }
 
-    createDots()
+    if (isClient) {
+      createDots()
+    }
 
     const animateDots = () => {
       setDots(prevDots => 
@@ -43,19 +55,25 @@ const AnimatedBackground: React.FC = () => {
     const intervalId = setInterval(animateDots, 50)
 
     return () => clearInterval(intervalId)
-  }, [])
+  }, [isClient]) // Run the effect when it's the client side
+
+  if (!isClient) {
+    return null // Avoid rendering anything on the server
+  }
 
   return (
     <div className="fixed inset-0 pointer-events-none">
       {dots.map(dot => (
         <div
           key={dot.id}
-          className="absolute rounded-full bg-white opacity-50"
+          className="absolute rounded-full"
           style={{
             left: `${dot.x}px`,
             top: `${dot.y}px`,
             width: `${dot.size}px`,
-            height: `${dot.size}px`
+            height: `${dot.size}px`,
+            backgroundColor: color, // Use the passed color here
+            opacity: 0.5,
           }}
         />
       ))}

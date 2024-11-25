@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, FormEvent } from 'react'
+import ChatInput from '../buttons/ChatSubmitt';
 
 interface AICapabilities {
   defaultTemperature: number;
@@ -108,7 +109,7 @@ export default function AiLyricGenerator() {
     setError('')
     addLog(`Submitting prompt: "${prompt}"`)
 
-    const lyricsPrompt = `Write a song in english with lyrics based on the following prompt. Make sure it has a clear structure with verses and a chorus if applicable: ${prompt}`
+    const lyricsPrompt = `Write a song in english with lyrics based on the following prompt. Make sure it has a clear structure with verses and a chorus if applicable. Do not exceed 500 words: ${prompt}`
 
     try {
       if (!session) {
@@ -170,92 +171,99 @@ export default function AiLyricGenerator() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold text-center mb-4">AI Lyric Generator</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="prompt">
-            Enter a theme or topic for your lyrics
-          </label>
-          <div className="flex space-x-2">
+    <div className="max-w-2xl mx-auto p-4 bg-gradient-to-br from-blue-600 to-blue-300 rounded">
+      <h1 className="text-2xl font-bold text-center mb-4">Lyric <span className="text-yellow-400">Generator</span></h1>
+      <div className="space-y-4">
+        <ChatInput
+          prompt={prompt}
+          setPrompt={setPrompt}
+          isLoading={isLoading}
+          onSubmit={handleSubmit}
+        />
+
+        <div className="flex flex-col md:flex-row  gap-8 justify-center">
+          <div className="flex flex-col">
+            <label className="block text-lg font-bold mb-2 mr-8" htmlFor="temperature">
+              Creativity: 
+              {temperature <= 0.2 ? (
+                <span className="text-red-500"> Greedy!</span>
+              ) : temperature <= 0.35 ? (
+                <span className="text-orange-500"> Low</span>
+              ) : temperature <= 0.6 ? (
+                <span className="text-orange-300"> Medium</span>
+              ) : temperature <= 0.9 ? (
+                <span className="text-green-400"> High</span>
+              ) : (
+                <span className="text-green-100"> Too Creative!</span>
+              )}
+            </label>
             <input
-              id="prompt"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="e.g., Love under the stars"
-              className="flex-grow p-2 border rounded"
+              type="range"
+              id="temperature"
+              min="0"
+              max="1"
+              step="0.01"
+              value={temperature}
+              onChange={(e) => setTemperature(Number(e.target.value))}
+              style={{ width: '250px' }}
             />
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`px-4 py-2 rounded ${isLoading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'} text-white`}
-            >
-              {isLoading ? 'Composing...' : 'Generate Lyrics'}
-            </button>
+          </div>
+          <div className="flex flex-col">
+            <label className="block text-lg font-bold mb-2" htmlFor="topK">
+              Riskiness:
+              {topK <= 5 ? (
+                <span className="text-red-500"> Safe</span>
+              ) : topK <= 15 ? (
+                <span className="text-orange-500"> Low</span>
+              ) : topK <= 30 ? (
+                <span className="text-orange-300"> Medium</span>
+              ) : topK <=  45? (
+                <span className="text-green-400"> High</span>
+              ) : (
+                <span className="text-green-100"> Too Risky!</span>
+              )}
+            </label>
+            <input
+              type="range"
+              id="topK"
+              min="1"
+              max="50"
+              step="1"
+              value={topK}
+              onChange={(e) => setTopK(Number(e.target.value))}
+              style={{ width: '200px' }}
+              className=""
+            />
+          </div>
+          <div className="flex flex-col items-center flex-grow">
+            <label className="block text-lg font-bold mb-2" htmlFor="maxWords">
+              Words: {maxWords}
+            </label>
+            <input
+              type="range"
+              id="maxWords"
+              min="50"
+              max="500"
+              step="10"
+              value={maxWords}
+              onChange={(e) => setMaxWords(Number(e.target.value))}
+              className=""
+              style={{ width: '100px' }}
+            />
           </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="temperature">
-            Creativity (Temperature): {temperature.toFixed(2)}
-          </label>
-          <input
-            type="range"
-            id="temperature"
-            min="0"
-            max="1"
-            step="0.01"
-            value={temperature}
-            onChange={(e) => setTemperature(Number(e.target.value))}
-            className="w-full"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="topK">
-            Diversity (Top K): {topK}
-          </label>
-          <input
-            type="range"
-            id="topK"
-            min="1"
-            max="50"
-            step="1"
-            value={topK}
-            onChange={(e) => setTopK(Number(e.target.value))}
-            className="w-full"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="maxWords">
-            Max Words: {maxWords}
-          </label>
-          <input
-            type="range"
-            id="maxWords"
-            min="10"
-            max="500"
-            step="10"
-            value={maxWords}
-            onChange={(e) => setMaxWords(Number(e.target.value))}
-            className="w-full"
-          />
-        </div>
-      </form>
+      </div>
       {error && (
         <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
           <strong>Error:</strong> {error}
         </div>
       )}
       {response && (
-        <div className="mt-4 p-4 bg-gray-100 rounded">
+        <div className="mt-4 p-4 bg-purple-300 rounded">
           <pre className="whitespace-pre-wrap font-serif">{response}</pre>
         </div>
       )}
-      <div className="mt-4">
-        <h2 className="text-lg font-semibold mb-2">Debug Logs</h2>
-        <pre className="bg-gray-800 text-white p-4 rounded overflow-x-auto">
-          {logs.join('\n')}
-        </pre>
-      </div>
+
     </div>
   )
 }

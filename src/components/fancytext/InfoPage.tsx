@@ -13,7 +13,7 @@ const AboutUs: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "end start"]
+    offset: ["start end", "end center"]
   })
 
   const facts: Fact[] = [
@@ -23,18 +23,18 @@ const AboutUs: React.FC = () => {
       icon: "🌍"
     },
     {
-      title: "Artist-First Approach",
-      description: "Our platform is designed with artists in mind. Keep 100% of your rights and receive fair, transparent payouts for every stream and download.",
+      title: "Earn money",
+      description: "Our platform is designed to allow anyone to profit on music. Buy 100% of the rights to revenue and receive fair, transparent payouts for every stream and download.",
       icon: "🎵"
     },
     {
       title: "Cutting-Edge Technology",
-      description: "We leverage the latest in music distribution technology to get your tracks live faster and provide detailed analytics to grow your career.",
+      description: "We leverage the latest in music analysis technology to see how your music is performing, from what sources, and how you compare with competitors.",
       icon: "💻"
     },
     {
       title: "Community Support",
-      description: "Join a thriving community of artists, producers, and music lovers. Collaborate, share insights, and grow together in your musical journey.",
+      description: "Join a thriving community of artists, investors, and music lovers. Collaborate, share insights, and grow together in your musical journey.",
       icon: "🤝"
     }
   ]
@@ -44,7 +44,7 @@ const AboutUs: React.FC = () => {
     "connect",
     "analyse music",
     "be kind",
-    "enjoy the website"
+    "build a community"
   ]
 
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0)
@@ -58,9 +58,9 @@ const AboutUs: React.FC = () => {
   }, [phrases.length])
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-purple-700 to-indigo-900 text-white overflow-hidden relative w-full">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-zinc-700 to-zinc-900 text-white overflow-hidden relative w-full">
       <AnimatedBackground />
-      <div className="container mx-auto px-4 py-16 relative z-10">
+      <div className="container mx-auto px-4 py-32 relative z-10">
         <motion.h1 
           className="text-5xl md:text-6xl font-bold mb-8 text-center"
           initial={{ opacity: 0, y: -50 }}
@@ -75,30 +75,30 @@ const AboutUs: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          Discover what makes our music distribution service unique and how we're empowering artists worldwide.
+          Discover what this platform has to offer and how YOU can benefit!
         </motion.p>
         
         {facts.map((fact, index) => {
           const yProgress = useTransform(scrollYProgress, 
-            [index / facts.length, (index + 1) / facts.length], 
+            [index / facts.length, (index + 0.4) / facts.length], 
             [100, 0]
           )
           const opacityProgress = useTransform(scrollYProgress, 
-            [index / facts.length, (index + 0.3) / facts.length], 
+            [index / facts.length, (index + 0.1) / facts.length], 
             [0, 1]
           )
 
           return (
             <motion.div
               key={index}
-              className="mb-24 text-center"
+              className="mb-32 text-center"
               style={{ y: yProgress, opacity: opacityProgress }}
             >
               <motion.div
                 className="text-6xl mb-4"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
               >
                 {fact.icon}
               </motion.div>
@@ -109,10 +109,10 @@ const AboutUs: React.FC = () => {
         })}
 
         <motion.div 
-          className="text-center mt-32 mb-16"
+          className="text-center mt-64 mb-16"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-8">
             Let's{' '}
@@ -132,13 +132,11 @@ const AboutUs: React.FC = () => {
             </span>
           </h2>
           <Link href="/browse" passHref>
-            <motion.a
+            <div
               className="inline-block bg-yellow-400 text-purple-900 px-8 py-3 rounded-full font-bold text-lg hover:bg-yellow-300 transition duration-300"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
             >
               Get Started
-            </motion.a>
+            </div>
           </Link>
         </motion.div>
       </div>

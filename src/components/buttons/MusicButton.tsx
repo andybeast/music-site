@@ -22,8 +22,8 @@ const MusicButton: React.FC<MusicButtonProps> = ({ children }) => {
           </span>
         </span>
         <span className="button-inner">
-          <span className="button-inner-static">Info</span>
-          <span className="button-inner-hover">Info</span>
+          <span className="button-inner-static">INFO</span>
+          <span className="button-inner-hover">INFO</span>
         </span>
       </button>
       </Link>
@@ -39,16 +39,16 @@ const StyledWrapper = styled.div`
   .button {
     position: relative;
     display: inline-flex;
-    height: 3.5rem;
+    height: 2rem;
     align-items: center;
     border-radius: 9999px;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    font-family: Arial;
-    font-size: 1.2rem;
-    font-weight: 640;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+    font-family: Helvetica Neue;
+    font-size: 1.4rem;
+    font-weight: 550;
     color: #fafaf6;
-    letter-spacing: -0.06em;
+    letter-spacing: -0.01em;
   }
 
   .button-item {
@@ -58,7 +58,7 @@ const StyledWrapper = styled.div`
 
   .button-item .button-bg {
     border-color: rgba(255, 208, 116);
-    background-color: rgba(23, 241, 209);
+    background-color: rgba(220, 38, 38);
   }
 
   .button-inner,
@@ -118,16 +118,16 @@ const StyledWrapper = styled.div`
   }
 
   .button-bg-layer.-purple {
-    background-color: rgba(163, 116, 255);
+    background-color: rgba(248, 113, 113);
   }
 
   .button-bg-layer.-turquoise {
-    background-color: rgba(23, 241, 209);
+    background-color: rgba(254, 202, 202);
   }
 
   .button-bg-layer.-yellow {
     --tw-bg-opacity: 1;
-    background-color: rgba(255, 165, 0, var(--tw-bg-opacity));
+    background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
   }
 
   .button:hover .button-inner-static {

@@ -9,8 +9,18 @@ const nextConfig: NextConfig = {
         hostname: "i.ibb.co",
         pathname: "/**", // Matches all paths under this domain
       },
+      {
+        protocol: "https",
+        hostname: "i.postimg.cc",
+        pathname: "/**", // Matches all paths under this domain
+      },
     ],
+  },
+  webpack: (config) => {
+    config.experiments = { ...config.experiments, topLevelAwait: true };
+    return config;
   },
 };
 
 export default nextConfig;
+

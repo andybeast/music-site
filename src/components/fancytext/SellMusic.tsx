@@ -83,7 +83,7 @@ const FAQItem: React.FC<{ question: string; answer: string }> = ({ question, ans
 
 const MusicSellingSteps: React.FC = () => {
   return (
-    <section className="bg-gradient-to-br from-purple-700 to-indigo-900 text-white py-16 px-4 md:px-8">
+    <section className="bg-gradient-to-br from-zinc-700 to-zinc-900 text-white py-16 px-4 md:px-8">
       <div className="max-w-6xl mx-auto">
         <motion.h2 
           className="text-4xl md:text-5xl font-bold mb-8 text-center"

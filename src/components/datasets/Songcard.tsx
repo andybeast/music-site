@@ -50,7 +50,7 @@ const songLinks: Record<number, string> = {
 
 const SongCard: React.FC<SongCardProps> = ({ song, currentlyPlaying, setCurrentlyPlaying }) => {
   return (
-    <div className="bg-white border rounded-lg shadow-lg p-4 transition-transform hover:scale-105 hover:shadow-2xl relative z-0">
+    <div className="bg-black rounded-lg shadow-lg p-4 transition-transform hover:scale-105 hover:shadow-2xl relative z-0">
       <Link href={song.link}>
         <div className="relative w-full aspect-square mb-3">
           <Image
@@ -61,11 +61,11 @@ const SongCard: React.FC<SongCardProps> = ({ song, currentlyPlaying, setCurrentl
             className="rounded-md object-cover"
           />
         </div>
-        <h3 className="text-xl font-semibold text-gray-800 mb-1 truncate sans-serif">
+        <h3 className="text-xl font-semibold text-white mb-1 truncate sans-serif">
           {song.title}
         </h3>
       </Link>
-      <p className="text-gray-800 text-sm mb-2 truncate">{song.album}</p>
+      <p className="text-gray-200 text-sm mb-2 truncate">{song.album}</p>
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center">
           <DollarSign className="w-6 h-6 text-yellow-500 mr-1" />
