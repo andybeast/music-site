@@ -35,9 +35,9 @@ export default function AiLyricGenerator() {
   const [topK, setTopK] = useState<number>(10)
   const [error, setError] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [logs, setLogs] = useState<string[]>([])
+  const [_logs, setLogs] = useState<string[]>([])
   const [maxWords, setMaxWords] = useState<number>(100)
-  const [repetitionThreshold, setRepetitionThreshold] = useState<number>(3)
+  const [repetitionThreshold] = useState<number>(3)
 
   const addLog = (message: string) => {
     setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] ${message}`])
@@ -46,11 +46,11 @@ export default function AiLyricGenerator() {
 
   useEffect(() => {
     const initializeSession = async () => {
-      addLog('Initializing AI session...')
+     
       if (!window.ai || !window.ai.languageModel) {
         const errorMessage = "Your browser doesn't support the Prompt API."
         setError(errorMessage)
-        addLog(`Error: ${errorMessage}`)
+        
         return
       }
 

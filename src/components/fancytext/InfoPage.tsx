@@ -39,6 +39,20 @@ const AboutUs: React.FC = () => {
     }
   ]
 
+  // Precompute `yProgress` and `opacityProgress` outside the .map() loop
+  const transformStyles = facts.map((_, index) => ({
+    yProgress: useTransform(
+      scrollYProgress,
+      [index / facts.length, (index + 0.4) / facts.length],
+      [100, 0]
+    ),
+    opacityProgress: useTransform(
+      scrollYProgress,
+      [index / facts.length, (index + 0.1) / facts.length],
+      [0, 1]
+    )
+  }))
+
   const phrases = [
     "enjoy music",
     "connect",
@@ -79,14 +93,7 @@ const AboutUs: React.FC = () => {
         </motion.p>
         
         {facts.map((fact, index) => {
-          const yProgress = useTransform(scrollYProgress, 
-            [index / facts.length, (index + 0.4) / facts.length], 
-            [100, 0]
-          )
-          const opacityProgress = useTransform(scrollYProgress, 
-            [index / facts.length, (index + 0.1) / facts.length], 
-            [0, 1]
-          )
+          const { yProgress, opacityProgress } = transformStyles[index]
 
           return (
             <motion.div

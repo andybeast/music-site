@@ -9,7 +9,7 @@ interface MusicButtonProps {
 }
 
 
-const MusicButton: React.FC<MusicButtonProps> = ({ children }) => {
+const MusicButton: React.FC<MusicButtonProps> = () => {
   return (
     <StyledWrapper>
       <Link href="/info">

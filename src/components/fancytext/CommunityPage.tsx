@@ -201,6 +201,10 @@ const SpotifySection: React.FC = () => {
         "https://open.spotify.com/embed/track/27ylqmPgRVbhU7LohYRxYD",
         "https://open.spotify.com/embed/track/179eZw6GHnj9Ul6Qz6UXpW",
         "https://open.spotify.com/embed/track/0HmD2sguEa4tVk8FhlLuJG",
+        "https://open.spotify.com/embed/track/4ivZP9vLilFqDJWF3y5H8x",
+        'https://open.spotify.com/embed/track/3O4XIDo3KTrfgRPbph25E3',
+        "https://open.spotify.com/embed/track/2OuRAGasrvkqi65ApPy5cI",
+        
         // Add more Spotify track URLs as needed
     ];
 

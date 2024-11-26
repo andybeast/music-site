@@ -16,7 +16,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const [isClient, setIsClient] = useState(false)
+  
 
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -32,9 +32,6 @@ export default function RootLayout({
     };
   }, []);
 
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
 
   return (
     <html lang="en">

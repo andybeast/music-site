@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react';
 import AiLyricGenerator from '@/src/components/datasets/AiLyrics';
-import AiIdeas from '@/src/components/datasets/AiIdea';
+
 import { ArrowLeft } from 'lucide-react'; // Using lucide-react for the back button icon
 import Image from 'next/image';
 import AnimatedBackground from '@/src/components/animations/Particles';
