@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import AnimatedBackground from '@/src/components/animations/Particles'
@@ -11,6 +9,29 @@ interface Fact {
   icon: string;
 }
 
+const facts: Fact[] = [
+  {
+    title: "Global Reach",
+    description: "We make all types of music, by bringing together creativity, talent and expertise we strive to create quality songs that leave impressions.",
+    icon: "🌍"
+  },
+  {
+    title: "Earn money",
+    description: "Our platform is designed to allow anyone to profit on music. Buy 100% of the rights to revenue and receive fair, transparent payouts for every stream and download.",
+    icon: "🎵"
+  },
+  {
+    title: "Cutting-Edge Technology",
+    description: "We leverage the latest in music analysis technology to see how your music is performing, from what sources, and how you compare with competitors.",
+    icon: "💻"
+  },
+  {
+    title: "Community Support",
+    description: "Join a thriving community of artists, investors, and music lovers. Collaborate, share insights, and grow together in your musical journey.",
+    icon: "🤝"
+  }
+]
+
 const AboutUs: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
@@ -18,45 +39,23 @@ const AboutUs: React.FC = () => {
     offset: ["start end", "end center"]
   })
 
-  const facts: Fact[] = [
-    {
-      title: "Global Reach",
-      description: "We make all types of music, by bringing together creativity, talent and expertise we strive to create quality songs that leave impressions.",
-      icon: "🌍"
-    },
-    {
-      title: "Earn money",
-      description: "Our platform is designed to allow anyone to profit on music. Buy 100% of the rights to revenue and receive fair, transparent payouts for every stream and download.",
-      icon: "🎵"
-    },
-    {
-      title: "Cutting-Edge Technology",
-      description: "We leverage the latest in music analysis technology to see how your music is performing, from what sources, and how you compare with competitors.",
-      icon: "💻"
-    },
-    {
-      title: "Community Support",
-      description: "Join a thriving community of artists, investors, and music lovers. Collaborate, share insights, and grow together in your musical journey.",
-      icon: "🤝"
-    }
-  ]
-
-  // Create an array of useTransform hooks for each fact
-  const yProgressArray = facts.map((_, index) =>
-    useTransform(
+  const yProgressArray = facts.map((_, index) => {
+    const progress = useTransform(
       scrollYProgress,
       [index / facts.length, (index + 0.4) / facts.length],
       [100, 0]
     )
-  )
+    return progress
+  })
 
-  const opacityProgressArray = facts.map((_, index) =>
-    useTransform(
+  const opacityProgressArray = facts.map((_, index) => {
+    const progress = useTransform(
       scrollYProgress,
       [index / facts.length, (index + 0.1) / facts.length],
       [0, 1]
     )
-  )
+    return progress
+  })
 
   const phrases = [
     "enjoy music",
