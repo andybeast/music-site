@@ -40,18 +40,20 @@ const AboutUs: React.FC = () => {
   ]
 
   // Precompute `yProgress` and `opacityProgress` outside the .map() loop
-  const transformStyles = facts.map((_, index) => ({
-    yProgress: useTransform(
+  const transformStyles = facts.map((_, index) => {
+    const yProgress = useTransform(
       scrollYProgress,
       [index / facts.length, (index + 0.4) / facts.length],
       [100, 0]
-    ),
-    opacityProgress: useTransform(
+    )
+    const opacityProgress = useTransform(
       scrollYProgress,
       [index / facts.length, (index + 0.1) / facts.length],
       [0, 1]
     )
-  }))
+
+    return { yProgress, opacityProgress }
+  })
 
   const phrases = [
     "enjoy music",
@@ -122,7 +124,7 @@ const AboutUs: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-8">
-            Let's{' '}
+            Let us{' '}
             <span className="inline-block w-128 overflow-hidden flex justify-center">
               <AnimatePresence mode="wait">
                 <motion.span

@@ -35,14 +35,11 @@ export default function AiLyricGenerator() {
   const [topK, setTopK] = useState<number>(10)
   const [error, setError] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [_logs, setLogs] = useState<string[]>([])
+  
   const [maxWords, setMaxWords] = useState<number>(100)
   const [repetitionThreshold] = useState<number>(3)
 
-  const addLog = (message: string) => {
-    setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] ${message}`])
-    console.log(message)
-  }
+
 
   useEffect(() => {
     const initializeSession = async () => {
@@ -56,15 +53,15 @@ export default function AiLyricGenerator() {
 
       try {
         const { defaultTemperature, defaultTopK } = await window.ai.languageModel.capabilities()
-        addLog(`Received default values: temperature=${defaultTemperature}, topK=${defaultTopK}`)
+        
         setTemperature(defaultTemperature)
         setTopK(defaultTopK)
         await updateSession()
-        addLog('AI Session initialized successfully')
+  
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err)
         setError(`Initialization error: ${errorMessage}`)
-        addLog(`Error during initialization: ${errorMessage}`)
+     
       }
     }
 
@@ -72,7 +69,7 @@ export default function AiLyricGenerator() {
   }, [])
 
   const updateSession = async () => {
-    addLog('Updating AI session...')
+  
     try {
       if (!window.ai || !window.ai.languageModel) {
         throw new Error("AI language model not available")
@@ -82,11 +79,11 @@ export default function AiLyricGenerator() {
         topK,
       })
       setSession(newSession)
-      addLog('AI Session updated successfully')
+
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err)
       setError(`Session error: ${errorMessage}`)
-      addLog(`Error updating session: ${errorMessage}`)
+      
     }
   }
 
@@ -100,20 +97,20 @@ export default function AiLyricGenerator() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!prompt.trim()) {
-      addLog('Submission attempted with empty prompt')
+
       return
     }
 
     setResponse("")
     setIsLoading(true)
     setError('')
-    addLog(`Submitting prompt: "${prompt}"`)
+
 
     const lyricsPrompt = `Write a song in english with lyrics based on the following prompt. Make sure it has a clear structure with verses and a chorus if applicable. Do not exceed 500 words: ${prompt}`
 
     try {
       if (!session) {
-        addLog('No active session, attempting to update...')
+      
         await updateSession()
       }
 
@@ -130,25 +127,25 @@ export default function AiLyricGenerator() {
           const timeoutMessage = 'Response timeout, the AI took too long to respond.'
           setError(timeoutMessage)
           setIsLoading(false)
-          addLog(timeoutMessage)
+       
         }
       }, 30000) // Timeout after 30 seconds
 
-      addLog('Starting to receive stream response...')
+ 
       for await (const chunk of stream) {
         fullResponse += chunk
         const words = fullResponse.trim().split(/\s+/)
         wordCount = words.length
 
         if (wordCount >= maxWords) {
-          addLog(`Reached maximum word count of ${maxWords}`)
+          
           break
         }
 
         if (detectRepetition(fullResponse, repetitionThreshold)) {
           repetitionCount++
           if (repetitionCount >= 2) {
-            addLog('Detected significant repetition, stopping generation')
+        
             break
           }
         } else {
@@ -161,12 +158,12 @@ export default function AiLyricGenerator() {
       clearTimeout(timeout)
       setIsLoading(false)
       setPrompt('')
-      addLog(`Received full response from AI (${wordCount} words)`)
+   
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err)
       setError(`Error: ${errorMessage}`)
       setIsLoading(false)
-      addLog(`Error during prompt submission: ${errorMessage}`)
+     
     }
   }
 

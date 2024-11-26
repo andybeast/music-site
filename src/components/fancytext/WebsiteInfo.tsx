@@ -45,14 +45,14 @@ const CountUp: React.FC<CountUpProps> = React.memo(({ end, duration = 2000 }) =>
             },
             { threshold: 0.1 }
         )
-
+        const currentRef = ref.current 
         if (ref.current) {
             observer.observe(ref.current)
         }
 
         return () => {
-            if (ref.current) {
-                observer.unobserve(ref.current)
+            if (currentRef) {  // Use the local variable in the cleanup
+                observer.unobserve(currentRef)
             }
         }
     }, [isVisible])
@@ -82,14 +82,14 @@ const AnimatedSection: React.FC<{ children: React.ReactNode }> = React.memo(({ c
             },
             { threshold: 0.1 }
         )
-
+        const currentRef = ref.current
         if (ref.current) {
             observer.observe(ref.current)
         }
 
         return () => {
-            if (ref.current) {
-                observer.unobserve(ref.current)
+            if (currentRef) {  // Use the local variable in the cleanup
+                observer.unobserve(currentRef)
             }
         }
     }, [])
@@ -104,17 +104,8 @@ const AnimatedSection: React.FC<{ children: React.ReactNode }> = React.memo(({ c
             {children}
         </motion.div>
     )
-
-
-
-
 })
-
-
-
-
 AnimatedSection.displayName = 'AnimatedSection'
-
 const WebsiteInfo: React.FC = () => {
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
 

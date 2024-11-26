@@ -34,7 +34,7 @@ const faqs = [
   },
   {
     question: "Can I sell cover songs?",
-    answer: "Yes, you can sell cover songs. However, you'll need to obtain a mechanical license for each cover song you want to distribute. We can help you with this process."
+    answer: "Yes, you can sell cover songs. However, you will need to obtain a mechanical license for each cover song you want to distribute. We can help you with this process."
   }
 ]
 
@@ -99,7 +99,7 @@ const MusicSellingSteps: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          It's never been easier to get your music to stores and streaming services. Now it is also easier than ever to sell/buy music. Follow these easy steps to get started:
+          It is never been easier to get your music to stores and streaming services. Now it is also easier than ever to sell/buy music. Follow these easy steps to get started:
         </motion.p>
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           {steps.map((step, index) => (

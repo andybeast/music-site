@@ -45,8 +45,7 @@ const LoginPage: React.FC = () => {
         });
 
         if (response.ok) {
-          const data = await response.json();
-          setError('Registration successful. You can now log in.');
+          
         } else {
           const errorData = await response.json();
           setError(errorData.message || 'Registration failed');

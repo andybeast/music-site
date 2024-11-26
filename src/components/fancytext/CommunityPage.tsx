@@ -29,27 +29,23 @@ const Card: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ child
     </div>
 )
 
-const CardHeader: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (
+const CardHeader: React.FC<React.PropsWithChildren<object>> = ({ children }) => (
     <div className="px-4 sm:px-6 py-4 flex items-center justify-between">{children}</div>
 )
 
-const CardTitle: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (
+const CardTitle: React.FC<React.PropsWithChildren<object>> = ({ children }) => (
     <h2 className="text-6xl font-bold text-white dark:text-gray-100">{children}</h2>
 )
 
-const CardContent: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (
+const CardContent: React.FC<React.PropsWithChildren<object>> = ({ children }) => (
     <div className="px-4 sm:px-6 py-4">{children}</div>
 )
 
-const CardDescription: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (
+const CardDescription: React.FC<React.PropsWithChildren<object>> = ({ children }) => (
     <p className="text-2xl text-gray-300 dark:text-gray-300 mb-4">{children}</p>
 )
 
-const Button: React.FC<React.PropsWithChildren<{ href: string; className?: string }>> = ({ children, href, className }) => (
-    <Link href={href} className={`inline-block px-4 py-2 rounded-md text-white bg-blue-500 hover:bg-blue-600 transition-colors ${className}`}>
-        {children}
-    </Link>
-)
+
 
 const SocialSection: React.FC<SocialSectionProps> = ({ title, gradient, imageSrc, description, children }) => (
     <Card className={`w-full ${gradient} animate-gradient bg-[length:200%_200%]`}>
