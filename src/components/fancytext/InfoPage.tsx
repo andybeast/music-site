@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import AnimatedBackground from '@/src/components/animations/Particles'
@@ -39,21 +41,22 @@ const AboutUs: React.FC = () => {
     }
   ]
 
-  // Precompute `yProgress` and `opacityProgress` outside the .map() loop
-  const transformStyles = facts.map((_, index) => {
-    const yProgress = useTransform(
+  // Create an array of useTransform hooks for each fact
+  const yProgressArray = facts.map((_, index) =>
+    useTransform(
       scrollYProgress,
       [index / facts.length, (index + 0.4) / facts.length],
       [100, 0]
     )
-    const opacityProgress = useTransform(
+  )
+
+  const opacityProgressArray = facts.map((_, index) =>
+    useTransform(
       scrollYProgress,
       [index / facts.length, (index + 0.1) / facts.length],
       [0, 1]
     )
-
-    return { yProgress, opacityProgress }
-  })
+  )
 
   const phrases = [
     "enjoy music",
@@ -94,28 +97,24 @@ const AboutUs: React.FC = () => {
           Discover what this platform has to offer and how YOU can benefit!
         </motion.p>
         
-        {facts.map((fact, index) => {
-          const { yProgress, opacityProgress } = transformStyles[index]
-
-          return (
+        {facts.map((fact, index) => (
+          <motion.div
+            key={index}
+            className="mb-32 text-center"
+            style={{ y: yProgressArray[index], opacity: opacityProgressArray[index] }}
+          >
             <motion.div
-              key={index}
-              className="mb-32 text-center"
-              style={{ y: yProgress, opacity: opacityProgress }}
+              className="text-6xl mb-4"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
             >
-              <motion.div
-                className="text-6xl mb-4"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-              >
-                {fact.icon}
-              </motion.div>
-              <h2 className="text-3xl font-bold mb-4">{fact.title}</h2>
-              <p className="text-xl max-w-2xl mx-auto">{fact.description}</p>
+              {fact.icon}
             </motion.div>
-          )
-        })}
+            <h2 className="text-3xl font-bold mb-4">{fact.title}</h2>
+            <p className="text-xl max-w-2xl mx-auto">{fact.description}</p>
+          </motion.div>
+        ))}
 
         <motion.div 
           className="text-center mt-64 mb-16"
@@ -154,3 +153,4 @@ const AboutUs: React.FC = () => {
 }
 
 export default AboutUs
+
