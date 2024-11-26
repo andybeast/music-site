@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useMemo } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import AnimatedBackground from '@/src/components/animations/Particles'
 import Link from 'next/link'
@@ -39,23 +39,20 @@ const AboutUs: React.FC = () => {
     offset: ["start end", "end center"]
   })
 
-  const yProgressArray = facts.map((_, index) => {
-    const progress = useTransform(
-      scrollYProgress,
-      [index / facts.length, (index + 0.4) / facts.length],
-      [100, 0]
-    )
-    return progress
-  })
-
-  const opacityProgressArray = facts.map((_, index) => {
-    const progress = useTransform(
-      scrollYProgress,
-      [index / facts.length, (index + 0.1) / facts.length],
-      [0, 1]
-    )
-    return progress
-  })
+  const transformArrays = useMemo(() => {
+    return facts.map((_, index) => ({
+      yProgress: useTransform(
+        scrollYProgress,
+        [index / facts.length, (index + 0.4) / facts.length],
+        [100, 0]
+      ),
+      opacityProgress: useTransform(
+        scrollYProgress,
+        [index / facts.length, (index + 0.1) / facts.length],
+        [0, 1]
+      )
+    }))
+  }, [scrollYProgress])
 
   const phrases = [
     "enjoy music",
@@ -100,7 +97,10 @@ const AboutUs: React.FC = () => {
           <motion.div
             key={index}
             className="mb-32 text-center"
-            style={{ y: yProgressArray[index], opacity: opacityProgressArray[index] }}
+            style={{ 
+              y: transformArrays[index].yProgress, 
+              opacity: transformArrays[index].opacityProgress 
+            }}
           >
             <motion.div
               className="text-6xl mb-4"
