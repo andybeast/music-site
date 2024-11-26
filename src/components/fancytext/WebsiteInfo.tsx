@@ -182,7 +182,7 @@ const WebsiteInfo: React.FC = () => {
                             }}
                         >
                             <p className="text-sm sm:text-xl text-gray-700 leading-relaxed font-sans">
-                                Lunar Boom is a cutting-edge music distributor and platform that makes quality music accessible, affordable, and easy to use for everyone. With us, you don't have to worry about royalties or copyright issues—we've got it all covered for you!
+                                Lunar Boom is a cutting-edge music distributor and platform that makes quality music accessible, affordable, and easy to use for everyone. With us, you do not have to worry about royalties or copyright issues—we have got it all covered for you!
                             </p>
                             <ul className="mt-2 sm:mt-4 space-y-2 text-sm sm:text-2xl text-gray-700 font-sans">
                                 <li className="flex items-center">

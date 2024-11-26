@@ -40,6 +40,23 @@ export default function AiSongIdeaGenerator() {
   const [error, setError] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
+
+  const updateSession = async () => {
+    try {
+      if (!window.ai || !window.ai.languageModel) {
+        throw new Error("AI language model not available")
+      }
+      const newSession = await window.ai.languageModel.create({
+        temperature,
+        topK,
+      })
+      setSession(newSession)
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : String(err)
+      setError(`Session error: ${errorMessage}`)
+    }
+  }
+
   useEffect(() => {
     const initializeSession = async () => {
       if (!window.ai || !window.ai.languageModel) {
@@ -59,24 +76,9 @@ export default function AiSongIdeaGenerator() {
     }
 
     initializeSession()
-  }, [])
+}, [updateSession]);
 
-  const updateSession = async () => {
-    try {
-      if (!window.ai || !window.ai.languageModel) {
-        throw new Error("AI language model not available")
-      }
-      const newSession = await window.ai.languageModel.create({
-        temperature,
-        topK,
-      })
-      setSession(newSession)
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err)
-      setError(`Session error: ${errorMessage}`)
-    }
-  }
-
+  
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!theme.trim()) {
