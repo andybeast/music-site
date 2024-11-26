@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react'
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import React, { useRef, useState, useEffect } from 'react'
+import { motion, useScroll, AnimatePresence } from 'framer-motion'
 import AnimatedBackground from '@/src/components/animations/Particles'
 import Link from 'next/link'
 
@@ -39,19 +39,11 @@ const AboutUs: React.FC = () => {
     offset: ["start end", "end center"]
   })
 
-  const transformArrays = useMemo(() => {
-    return facts.map((_, index) => ({
-      yProgress: useTransform(
-        scrollYProgress,
-        [index / facts.length, (index + 0.4) / facts.length],
-        [100, 0]
-      ),
-      opacityProgress: useTransform(
-        scrollYProgress,
-        [index / facts.length, (index + 0.1) / facts.length],
-        [0, 1]
-      )
-    }))
+  const [scrollY, setScrollY] = useState(0)
+
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.onChange(setScrollY)
+    return () => unsubscribe()
   }, [scrollYProgress])
 
   const phrases = [
@@ -93,27 +85,34 @@ const AboutUs: React.FC = () => {
           Discover what this platform has to offer and how YOU can benefit!
         </motion.p>
         
-        {facts.map((fact, index) => (
-          <motion.div
-            key={index}
-            className="mb-32 text-center"
-            style={{ 
-              y: transformArrays[index].yProgress, 
-              opacity: transformArrays[index].opacityProgress 
-            }}
-          >
+        {facts.map((fact, index) => {
+          const startProgress = index / facts.length
+          const endProgress = (index + 0.4) / facts.length
+          const yProgress = Math.max(0, Math.min(1, (scrollY - startProgress) / (endProgress - startProgress)))
+          const opacity = Math.max(0, Math.min(1, (scrollY - startProgress) / ((index + 0.1) / facts.length - startProgress)))
+
+          return (
             <motion.div
-              className="text-6xl mb-4"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              key={index}
+              className="mb-32 text-center"
+              style={{ 
+                y: 100 - (yProgress * 100),
+                opacity: opacity
+              }}
             >
-              {fact.icon}
+              <motion.div
+                className="text-6xl mb-4"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+              >
+                {fact.icon}
+              </motion.div>
+              <h2 className="text-3xl font-bold mb-4">{fact.title}</h2>
+              <p className="text-xl max-w-2xl mx-auto">{fact.description}</p>
             </motion.div>
-            <h2 className="text-3xl font-bold mb-4">{fact.title}</h2>
-            <p className="text-xl max-w-2xl mx-auto">{fact.description}</p>
-          </motion.div>
-        ))}
+          )
+        })}
 
         <motion.div 
           className="text-center mt-64 mb-16"
