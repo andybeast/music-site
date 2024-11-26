@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useState, useEffect, FormEvent } from 'react'
+import { useState, useEffect, FormEvent, useCallback } from 'react';
 import ChatInput from '../buttons/ChatSubmitt';
 
 interface AICapabilities {
@@ -28,144 +28,126 @@ declare global {
 }
 
 export default function AiLyricGenerator() {
-  const [prompt, setPrompt] = useState<string>('')
-  const [response, setResponse] = useState<string>('')
-  const [session, setSession] = useState<AISession | null>(null)
-  const [temperature, setTemperature] = useState<number>(0.7)
-  const [topK, setTopK] = useState<number>(10)
-  const [error, setError] = useState<string>('')
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  
-  const [maxWords, setMaxWords] = useState<number>(100)
-  const [repetitionThreshold] = useState<number>(3)
+  const [prompt, setPrompt] = useState<string>('');
+  const [response, setResponse] = useState<string>('');
+  const [session, setSession] = useState<AISession | null>(null);
+  const [temperature, setTemperature] = useState<number>(0.7);
+  const [topK, setTopK] = useState<number>(10);
+  const [error, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const [maxWords, setMaxWords] = useState<number>(100);
+  const [repetitionThreshold] = useState<number>(3);
 
-
-  useEffect(() => {
-    const initializeSession = async () => {
-     
-      if (!window.ai || !window.ai.languageModel) {
-        const errorMessage = "Your browser doesn't support the Prompt API."
-        setError(errorMessage)
-        
-        return
-      }
-
-      try {
-        const { defaultTemperature, defaultTopK } = await window.ai.languageModel.capabilities()
-        
-        setTemperature(defaultTemperature)
-        setTopK(defaultTopK)
-        await updateSession()
-  
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : String(err)
-        setError(`Initialization error: ${errorMessage}`)
-     
-      }
-    }
-
-    initializeSession()
-  }, [])
-
-  const updateSession = async () => {
-  
+  // Memoize the `updateSession` function to avoid recreating it unnecessarily
+  const updateSession = useCallback(async () => {
     try {
       if (!window.ai || !window.ai.languageModel) {
-        throw new Error("AI language model not available")
+        throw new Error('AI language model not available');
       }
       const newSession = await window.ai.languageModel.create({
         temperature,
         topK,
-      })
-      setSession(newSession)
-
+      });
+      setSession(newSession);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err)
-      setError(`Session error: ${errorMessage}`)
-      
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(`Session error: ${errorMessage}`);
     }
-  }
+  }, [temperature, topK]); // Dependencies: only changes when `temperature` or `topK` changes
+
+  useEffect(() => {
+    const initializeSession = async () => {
+      if (!window.ai || !window.ai.languageModel) {
+        setError("Your browser doesn't support the Prompt API.");
+        return;
+      }
+
+      try {
+        const { defaultTemperature, defaultTopK } = await window.ai.languageModel.capabilities();
+        setTemperature(defaultTemperature);
+        setTopK(defaultTopK);
+        await updateSession();
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        setError(`Initialization error: ${errorMessage}`);
+      }
+    };
+
+    initializeSession();
+  }, [updateSession]); // `updateSession` is now correctly included as a dependency
 
   const detectRepetition = (text: string, threshold: number): boolean => {
-    const words = text.split(/\s+/)
-    const lastNWords = words.slice(-threshold)
-    const previousNWords = words.slice(-2 * threshold, -threshold)
-    return JSON.stringify(lastNWords) === JSON.stringify(previousNWords)
-  }
+    const words = text.split(/\s+/);
+    const lastNWords = words.slice(-threshold);
+    const previousNWords = words.slice(-2 * threshold, -threshold);
+    return JSON.stringify(lastNWords) === JSON.stringify(previousNWords);
+  };
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!prompt.trim()) {
-
-      return
+      return;
     }
 
-    setResponse("")
-    setIsLoading(true)
-    setError('')
+    setResponse('');
+    setIsLoading(true);
+    setError('');
 
-
-    const lyricsPrompt = `Write a song in english with lyrics based on the following prompt. Make sure it has a clear structure with verses and a chorus if applicable. Do not exceed 500 words: ${prompt}`
+    const lyricsPrompt = `Write a song in English with lyrics based on the following prompt. Make sure it has a clear structure with verses and a chorus if applicable. Do not exceed 500 words: ${prompt}`;
 
     try {
       if (!session) {
-      
-        await updateSession()
+        await updateSession();
       }
 
       if (!session) {
-        throw new Error("Failed to create a session")
+        throw new Error('Failed to create a session');
       }
 
-      const stream = await session.promptStreaming(lyricsPrompt)
-      let fullResponse = ''
-      let wordCount = 0
-      let repetitionCount = 0
+      const stream = await session.promptStreaming(lyricsPrompt);
+      let fullResponse = '';
+      let wordCount = 0;
+      let repetitionCount = 0;
+
       const timeout = setTimeout(() => {
         if (isLoading) {
-          const timeoutMessage = 'Response timeout, the AI took too long to respond.'
-          setError(timeoutMessage)
-          setIsLoading(false)
-       
+          setError('Response timeout, the AI took too long to respond.');
+          setIsLoading(false);
         }
-      }, 30000) // Timeout after 30 seconds
+      }, 30000); // Timeout after 30 seconds
 
- 
       for await (const chunk of stream) {
-        fullResponse += chunk
-        const words = fullResponse.trim().split(/\s+/)
-        wordCount = words.length
+        fullResponse += chunk;
+        const words = fullResponse.trim().split(/\s+/);
+        wordCount = words.length;
 
         if (wordCount >= maxWords) {
-          
-          break
+          break;
         }
 
         if (detectRepetition(fullResponse, repetitionThreshold)) {
-          repetitionCount++
+          repetitionCount++;
           if (repetitionCount >= 2) {
-        
-            break
+            break;
           }
         } else {
-          repetitionCount = 0
+          repetitionCount = 0;
         }
 
-        setResponse(fullResponse.trim())
+        setResponse(fullResponse.trim());
       }
 
-      clearTimeout(timeout)
-      setIsLoading(false)
-      setPrompt('')
-   
+      clearTimeout(timeout);
+      setIsLoading(false);
+      setPrompt('');
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err)
-      setError(`Error: ${errorMessage}`)
-      setIsLoading(false)
-     
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(`Error: ${errorMessage}`);
+      setIsLoading(false);
     }
-  }
+  };
+
 
   return (
     <div className="max-w-2xl mx-auto p-4 bg-gradient-to-br from-blue-600 to-blue-300 rounded">

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, FormEvent } from 'react'
+import { useState, useEffect, FormEvent, useCallback } from 'react'
 
 interface AICapabilities {
   defaultTemperature: number;
@@ -41,21 +41,21 @@ export default function AiSongIdeaGenerator() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
 
-  const updateSession = async () => {
+  const updateSession = useCallback(async () => {
     try {
       if (!window.ai || !window.ai.languageModel) {
-        throw new Error("AI language model not available")
+        throw new Error("AI language model not available");
       }
       const newSession = await window.ai.languageModel.create({
         temperature,
         topK,
-      })
-      setSession(newSession)
+      });
+      setSession(newSession);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err)
-      setError(`Session error: ${errorMessage}`)
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(`Session error: ${errorMessage}`);
     }
-  }
+  }, [temperature, topK]); // Dependencies: variables used inside `updateSession`
 
   useEffect(() => {
     const initializeSession = async () => {
