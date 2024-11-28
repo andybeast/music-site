@@ -1,19 +1,16 @@
 'use client';
 
-import { useState, useEffect, FormEvent, useCallback } from 'react';
-import ChatInput from '../buttons/ChatSubmitt';
-
-interface AICapabilities {
-  defaultTemperature: number;
-  defaultTopK: number;
-}
+import { useState, useEffect, FormEvent } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import { Button } from '@/src/components/ui/button';
+import { Textarea } from '@/src/components/ui/textarea';
 
 interface AISession {
   promptStreaming: (prompt: string) => AsyncIterable<string>;
 }
 
 interface AILanguageModel {
-  capabilities: () => Promise<AICapabilities>;
+  capabilities: () => Promise<any>;
   create: (options: { temperature: number; topK: number }) => Promise<AISession>;
 }
 
@@ -31,43 +28,23 @@ export default function AiLyricGenerator() {
   const [prompt, setPrompt] = useState<string>('');
   const [response, setResponse] = useState<string>('');
   const [session, setSession] = useState<AISession | null>(null);
-  const [temperature, setTemperature] = useState<number>(0.7);
-  const [topK, setTopK] = useState<number>(10);
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const [maxWords, setMaxWords] = useState<number>(100);
-  const [repetitionThreshold] = useState<number>(3);
-
-  // Memoize the `updateSession` function to avoid recreating it unnecessarily
-  const updateSession = useCallback(async () => {
-    try {
-      if (!window.ai || !window.ai.languageModel) {
-        throw new Error('AI language model not available');
-      }
-      const newSession = await window.ai.languageModel.create({
-        temperature,
-        topK,
-      });
-      setSession(newSession);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      setError(`Session error: ${errorMessage}`);
-    }
-  }, [temperature, topK]); // Dependencies: only changes when `temperature` or `topK` changes
+  const [completeResponse, setCompleteResponse] = useState<string>('');
 
   useEffect(() => {
     const initializeSession = async () => {
-      if (!window.ai || !window.ai.languageModel) {
+      if (!window.ai?.languageModel) {
         setError("Your browser doesn't support the Prompt API.");
         return;
       }
 
       try {
-        const { defaultTemperature, defaultTopK } = await window.ai.languageModel.capabilities();
-        setTemperature(defaultTemperature);
-        setTopK(defaultTopK);
-        await updateSession();
+        const newSession = await window.ai.languageModel.create({
+          temperature: 0.7,
+          topK: 40,
+        });
+        setSession(newSession);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
         setError(`Initialization error: ${errorMessage}`);
@@ -75,174 +52,176 @@ export default function AiLyricGenerator() {
     };
 
     initializeSession();
-  }, [updateSession]); // `updateSession` is now correctly included as a dependency
+  }, []);
 
-  const detectRepetition = (text: string, threshold: number): boolean => {
-    const words = text.split(/\s+/);
-    const lastNWords = words.slice(-threshold);
-    const previousNWords = words.slice(-2 * threshold, -threshold);
-    return JSON.stringify(lastNWords) === JSON.stringify(previousNWords);
+  // Process the complete response after streaming is done
+  useEffect(() => {
+    if (completeResponse && !isLoading) {
+      const cleanedResponse = cleanLyrics(completeResponse);
+      setResponse(cleanedResponse);
+    }
+  }, [completeResponse, isLoading]);
+
+  const cleanLyrics = (text: string): string => {
+    // First, remove all parentheses and their contents
+    let cleaned = text.replace(/$$[^)]*$$/g, '');
+    
+    // Split into lines and remove duplicates
+    const uniqueLines = Array.from(new Set(cleaned.split('\n')));
+    
+    // Process each line
+    const processedLines = uniqueLines
+      .map(line => line.trim())
+      .filter(line => {
+        // Keep lines that are either section headers [Verse], [Chorus] or non-empty content
+        return line.match(/^\[.*\]$/) || (line && !line.includes('(') && !line.includes(')'));
+      });
+
+    // Join lines back together with proper spacing
+    cleaned = processedLines.join('\n');
+    
+    // Clean up multiple newlines and trim
+    return cleaned
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!prompt.trim()) {
-      return;
-    }
+    if (!prompt.trim()) return;
 
     setResponse('');
+    setCompleteResponse('');
     setIsLoading(true);
     setError('');
 
-    const lyricsPrompt = `Write a song in English with lyrics based on the following prompt. Make sure it has a clear structure with verses and a chorus if applicable. Do not exceed 500 words: ${prompt}`;
+    const lyricsPrompt = `Write a song with lyrics based on this theme: "${prompt}".  
+      Keep it concise with maximum 3 verses.
+      Do not use any parentheses or brackets in the response.`;
 
     try {
       if (!session) {
-        await updateSession();
-      }
-
-      if (!session) {
-        throw new Error('Failed to create a session');
+        throw new Error('Session not initialized');
       }
 
       const stream = await session.promptStreaming(lyricsPrompt);
-      let fullResponse = '';
-      let wordCount = 0;
-      let repetitionCount = 0;
-
-      const timeout = setTimeout(() => {
-        if (isLoading) {
-          setError('Response timeout, the AI took too long to respond.');
-          setIsLoading(false);
-        }
-      }, 30000); // Timeout after 30 seconds
+      let fullText = '';
 
       for await (const chunk of stream) {
-        fullResponse += chunk;
-        const words = fullResponse.trim().split(/\s+/);
-        wordCount = words.length;
-
-        if (wordCount >= maxWords) {
+        fullText += chunk;
+        
+        // Update the complete response as we receive chunks
+        setCompleteResponse(fullText);
+        
+        // Check if we've exceeded our limit
+        const paragraphCount = fullText.split(/\n\s*\n/).length;
+        if (paragraphCount > 20) {
           break;
         }
-
-        if (detectRepetition(fullResponse, repetitionThreshold)) {
-          repetitionCount++;
-          if (repetitionCount >= 2) {
-            break;
-          }
-        } else {
-          repetitionCount = 0;
-        }
-
-        setResponse(fullResponse.trim());
       }
 
-      clearTimeout(timeout);
       setIsLoading(false);
       setPrompt('');
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      setError(`Error: ${errorMessage}`);
+      setError(`Error: ${err instanceof Error ? err.message : String(err)}`);
       setIsLoading(false);
     }
   };
 
+  const formatLyrics = (text: string) => {
+    if (!text) return null;
+    
+    const lines = text.split('\n');
+    
+    return lines.map((line, index) => {
+      const trimmedLine = line.trim();
+      
+      if (trimmedLine.match(/^\[.*\]$/)) {
+        return (
+          <h3 key={index} className="text-xl font-bold mt-6 mb-3 text-primary">
+            {trimmedLine}
+          </h3>
+        );
+      }
+      
+      return trimmedLine ? (
+        <p key={index} className="my-1 leading-relaxed">
+          {trimmedLine}
+        </p>
+      ) : null;
+    }).filter(Boolean);
+  };
 
   return (
-    <div className="max-w-2xl mx-auto p-4 bg-gradient-to-br from-blue-600 to-blue-300 rounded">
-      <h1 className="text-2xl font-bold text-center mb-4">Lyric <span className="text-yellow-400">Generator</span></h1>
-      <div className="space-y-4">
-        <ChatInput
-          prompt={prompt}
-          setPrompt={setPrompt}
-          isLoading={isLoading}
-          onSubmit={handleSubmit}
-        />
+    <Card className="max-w-2xl mx-auto">
+      <CardHeader className="text-center">
+        <CardTitle className="flex items-center justify-center gap-2 text-3xl">
+          <svg
+            className="h-8 w-8"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+            />
+          </svg>
+          Lyric <span className="text-yellow-400">Generator</span> 
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-xl font-semibold block text-white">
+              What would you like to write a song about?
+            </label>
+            <Textarea
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="Enter your song idea or theme..."
+              className="min-h-[100px]"
+              disabled={isLoading}
+            />
+          </div>
 
-        <div className="flex flex-col md:flex-row  gap-8 justify-center">
-          <div className="flex flex-col">
-            <label className="block text-lg font-bold mb-2 mr-8" htmlFor="temperature">
-              Creativity: 
-              {temperature <= 0.2 ? (
-                <span className="text-red-500"> Greedy!</span>
-              ) : temperature <= 0.35 ? (
-                <span className="text-orange-500"> Low</span>
-              ) : temperature <= 0.6 ? (
-                <span className="text-orange-300"> Medium</span>
-              ) : temperature <= 0.9 ? (
-                <span className="text-green-400"> High</span>
-              ) : (
-                <span className="text-green-100"> Too Creative!</span>
-              )}
-            </label>
-            <input
-              type="range"
-              id="temperature"
-              min="0"
-              max="1"
-              step="0.01"
-              value={temperature}
-              onChange={(e) => setTemperature(Number(e.target.value))}
-              style={{ width: '250px' }}
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="block text-lg font-bold mb-2" htmlFor="topK">
-              Riskiness:
-              {topK <= 5 ? (
-                <span className="text-red-500"> Safe</span>
-              ) : topK <= 15 ? (
-                <span className="text-orange-500"> Low</span>
-              ) : topK <= 30 ? (
-                <span className="text-orange-300"> Medium</span>
-              ) : topK <=  45? (
-                <span className="text-green-400"> High</span>
-              ) : (
-                <span className="text-green-100"> Too Risky!</span>
-              )}
-            </label>
-            <input
-              type="range"
-              id="topK"
-              min="1"
-              max="50"
-              step="1"
-              value={topK}
-              onChange={(e) => setTopK(Number(e.target.value))}
-              style={{ width: '200px' }}
-              className=""
-            />
-          </div>
-          <div className="flex flex-col items-center flex-grow">
-            <label className="block text-lg font-bold mb-2" htmlFor="maxWords">
-              Words: {maxWords}
-            </label>
-            <input
-              type="range"
-              id="maxWords"
-              min="50"
-              max="500"
-              step="10"
-              value={maxWords}
-              onChange={(e) => setMaxWords(Number(e.target.value))}
-              className=""
-              style={{ width: '100px' }}
-            />
-          </div>
-        </div>
-      </div>
-      {error && (
-        <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          <strong>Error:</strong> {error}
-        </div>
-      )}
-      {response && (
-        <div className="mt-4 p-4 bg-purple-300 rounded">
-          <pre className="whitespace-pre-wrap font-serif">{response}</pre>
-        </div>
-      )}
+          <Button 
+            type="submit" 
+            className="w-full" 
+            disabled={isLoading || !prompt.trim()}
+          >
+            {isLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                <span>Generating Lyrics...</span>
+              </div>
+            ) : (
+              'Generate Lyrics'
+            )}
+          </Button>
+        </form>
 
-    </div>
-  )
+        {error && (
+          <div className="mt-6 p-4 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-lg">
+            {error}
+          </div>
+        )}
+
+        {response && (
+          <div className="mt-6 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg">
+            <div className="prose prose-gray dark:prose-invert max-w-none">
+              <h2 className="text-xl font-bold text-center mb-4 italic">
+                {prompt}
+              </h2>
+              {formatLyrics(response)}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
 }
+

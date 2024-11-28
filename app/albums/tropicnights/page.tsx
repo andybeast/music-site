@@ -2,17 +2,24 @@
 'use client'
 
 // Adjust this path based on where SongsList is located
-import Tropic from "@/src/components/fancytext/albumpages/tropicnights";
+import { AlbumDisplay } from "@/src/lib/AlbumPages";
+
+// Example usage component
+export const AlbumPage: React.FC = () => {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold mb-6">Album: Tropic Nights</h1>
+        <AlbumDisplay albumName="Tropic Nights" className="max-w-md" />
+      </div>
+    )
+  }
 
 export default function TropicNights() {
   return (
     
+      <AlbumPage></AlbumPage>
       
-      
-      <div className="flex justify-center bg-gradient-to-br from-zinc-500 to-zinc-900 relative z-0">
-        <Tropic></Tropic>
-        
-      </div>
+     
 
       
    

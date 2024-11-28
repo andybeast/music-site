@@ -8,7 +8,7 @@ import AnimatedBackground from '@/src/components/animations/Particles';
 import AiIdea from '@/src/components/datasets/AiIdea';
 
 // Define the possible views
-type View = 'menu' | 'lyrics' | 'rewriter' | 'writer';
+type View = 'menu' | 'lyrics' | 'rewriter';
 
 export default function Ai() {
   const [currentView, setCurrentView] = useState<View>('menu');
@@ -20,8 +20,6 @@ export default function Ai() {
         return <AiLyricGenerator />;
       case 'rewriter':
         return <AiIdea></AiIdea>;
-      case 'writer':
-        return <div>sooner</div>;
       default:
         return null;
     }
@@ -34,8 +32,7 @@ export default function Ai() {
         return '#4CA3D9';  // Blue for lyrics
       case 'rewriter':
         return 'red';   // Red for rewriter
-      case 'writer':
-        return 'green'; // Green for writer
+       // Green for writer
       default:
         return 'white'; // Default color (for the menu or other views)
     }
@@ -43,33 +40,21 @@ export default function Ai() {
 
   // Navigation menu component
   const Menu = () => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-4 max-w-6xl mx-auto py-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-4 max-w-6xl mx-auto">
       <AnimatedBackground color={getBackgroundColor()} />
 
-      <button
-        onClick={() => setCurrentView('writer')}
-        className="p-6 bg-green-700 backdrop-blur-sm rounded-lg shadow-lg hover:bg-gradient-to-r hover:from-green-700 hover:to-green-400 transition-all duration-1000 ease-in-out hover:scale-105"
-      >
-        <h3 className="text-2xl font-bold mb-2 text-black">AI <span className="text-yellow-400">Song Inspiration</span></h3>
-        <Image 
-          src="https://i.ibb.co/WGQ7KzK/monkey-thinking.jpg" 
-          alt="Designer"
-          width={100}
-          height={100}
-          className="rounded-full w-full h-auto"
-        />
-      </button>
+      
       
       <button
         onClick={() => setCurrentView('rewriter')}
         className="p-6 bg-red-700 backdrop-blur-sm rounded-lg shadow-lg hover:bg-gradient-to-r hover:from-red-700 hover:to-red-400 transition-all duration-1000 ease-in-out hover:scale-105"
       >
-        <h3 className="text-2xl font-bold mb-2 text-black">AI <span className="text-yellow-400">Rewriter</span> </h3>
+        <h3 className="text-2xl font-bold mb-2 text-black">AI <span className="text-yellow-400">Song Inspiration</span> </h3>
         <Image 
           src="https://i.ibb.co/BGTNtT5/monkey-whiteboard.jpg" 
           alt="Designer"
-          width={100}
-          height={100}
+          width={300}
+          height={300}
           className="rounded-full w-full h-auto"
         />
       </button>
@@ -82,8 +67,8 @@ export default function Ai() {
         <Image 
           src="https://i.ibb.co/ws0G97f/monkey-write.jpg" 
           alt="Designer"
-          width={100}
-          height={100}
+          width={300}
+          height={300}
           className="rounded-full w-full h-auto"
         />
       </button>
@@ -91,7 +76,7 @@ export default function Ai() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-600 to-zinc-900 py-32">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-600 to-zinc-900 py-8">
       <AnimatedBackground color={getBackgroundColor()} />
       <div className="container mx-auto px-4 py-8">
         {/* Header with GlitchText and optional back button */}

@@ -1,74 +1,54 @@
 'use client'
 
-import { useState, useEffect, FormEvent, useCallback } from 'react'
-
-interface AICapabilities {
-  defaultTemperature: number;
-  defaultTopK: number;
-}
+import { useState, useEffect, FormEvent } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
 
 interface AISession {
-  promptStreaming: (prompt: string) => AsyncIterable<string>;
+  promptStreaming: (prompt: string) => AsyncIterable<string>
 }
 
 interface AILanguageModel {
-  capabilities: () => Promise<AICapabilities>;
-  create: (options: { temperature: number; topK: number }) => Promise<AISession>;
+  capabilities: () => Promise<any>
+  create: (options: { temperature: number; topK: number }) => Promise<AISession>
 }
 
 interface AIInterface {
-  languageModel: AILanguageModel;
+  languageModel: AILanguageModel
+}
+
+interface SongIdea {
+  title: string
+  concept: string
 }
 
 declare global {
   interface Window {
-    ai?: AIInterface;
+    ai?: AIInterface
   }
-}
-
-interface SongIdea {
-  title: string;
-  concept: string;
 }
 
 export default function AiSongIdeaGenerator() {
   const [theme, setTheme] = useState<string>('')
   const [ideas, setIdeas] = useState<SongIdea[]>([])
   const [session, setSession] = useState<AISession | null>(null)
-  const [temperature, setTemperature] = useState<number>(0.7)
-  const [topK, setTopK] = useState<number>(10)
   const [error, setError] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-
-  const updateSession = useCallback(async () => {
-    try {
-      if (!window.ai || !window.ai.languageModel) {
-        throw new Error("AI language model not available");
-      }
-      const newSession = await window.ai.languageModel.create({
-        temperature,
-        topK,
-      });
-      setSession(newSession);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      setError(`Session error: ${errorMessage}`);
-    }
-  }, [temperature, topK]); // Dependencies: variables used inside `updateSession`
-
   useEffect(() => {
     const initializeSession = async () => {
-      if (!window.ai || !window.ai.languageModel) {
+      if (!window.ai?.languageModel) {
         setError("Your browser doesn't support the Prompt API.")
         return
       }
 
       try {
-        const { defaultTemperature, defaultTopK } = await window.ai.languageModel.capabilities()
-        setTemperature(defaultTemperature)
-        setTopK(defaultTopK)
-        await updateSession()
+        const newSession = await window.ai.languageModel.create({
+          temperature: 0.7,
+          topK: 40,
+        })
+        setSession(newSession)
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err)
         setError(`Initialization error: ${errorMessage}`)
@@ -76,14 +56,11 @@ export default function AiSongIdeaGenerator() {
     }
 
     initializeSession()
-}, [updateSession]);
+  }, [])
 
-  
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (!theme.trim()) {
-      return
-    }
+    if (!theme.trim()) return
 
     setIdeas([])
     setIsLoading(true)
@@ -93,11 +70,7 @@ export default function AiSongIdeaGenerator() {
 
     try {
       if (!session) {
-        await updateSession()
-      }
-
-      if (!session) {
-        throw new Error("Failed to create a session")
+        throw new Error('Session not initialized')
       }
 
       const stream = await session.promptStreaming(prompt)
@@ -105,10 +78,10 @@ export default function AiSongIdeaGenerator() {
 
       const timeout = setTimeout(() => {
         if (isLoading) {
-          setError('Response timeout, the AI took too long to respond.')
+          setError('Response timeout. Please try again.')
           setIsLoading(false)
         }
-      }, 30000) // Timeout after 30 seconds
+      }, 30000)
 
       for await (const chunk of stream) {
         fullResponse += chunk
@@ -120,8 +93,7 @@ export default function AiSongIdeaGenerator() {
       setIsLoading(false)
       setTheme('')
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err)
-      setError(`Error: ${errorMessage}`)
+      setError(`Error: ${err instanceof Error ? err.message : String(err)}`)
       setIsLoading(false)
     }
   }
@@ -152,48 +124,84 @@ export default function AiSongIdeaGenerator() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6 bg-gradient-to-br from-blue-600 to-blue-300 rounded-lg shadow-lg">
-      <h1 className="text-3xl font-bold text-center text-white">Song Idea Generator</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          value={theme}
-          onChange={(e) => setTheme(e.target.value)}
-          placeholder="Enter a theme for your song ideas"
-          className="w-full p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          type="submit"
-          className={`w-full p-2 rounded-md text-white font-semibold ${
-            isLoading
-              ? 'bg-gray-500 cursor-not-allowed'
-              : 'bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500'
-          }`}
-          disabled={isLoading}
-        >
-          {isLoading ? 'Generating Ideas...' : 'Generate Song Ideas'}
-        </button>
-      </form>
-      {error && (
-        <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-md">
-          <strong>Error:</strong> {error}
-        </div>
-      )}
-      {ideas.length > 0 && (
-        <div className="p-4 bg-white rounded-md shadow">
-          <h2 className="text-xl font-semibold mb-2 text-blue-600">Song Ideas:</h2>
-          <ul className="list-disc pl-5 space-y-4">
-            {ideas.map((idea, index) => (
-              <li key={index} className="text-gray-800">
-                <strong>{idea.title}</strong>
-                <br />
-                <span className="text-sm text-gray-600">{idea.concept}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+    <Card className="max-w-2xl mx-auto">
+      <CardHeader className="text-center">
+        <CardTitle className="flex items-center justify-center gap-2 text-3xl">
+          <svg
+            className="h-8 w-8"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+            />
+          </svg>
+          Song <span className="text-yellow-400">Inspiration</span> 
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-xl font-bold block text-white">
+              What theme would you like song ideas about?
+            </label>
+            <Input
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              placeholder="Enter a theme (e.g., love, nature, adventure)..."
+              disabled={isLoading}
+            />
+          </div>
+
+          <Button 
+            type="submit" 
+            className="w-full" 
+            disabled={isLoading || !theme.trim()}
+          >
+            {isLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                Generating Ideas...
+              </div>
+            ) : (
+              'Generate Ideas'
+            )}
+          </Button>
+        </form>
+
+        {error && (
+          <div className="mt-6 p-4 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-lg">
+            {error}
+          </div>
+        )}
+
+        {ideas.length > 0 && (
+          <div className="mt-6 p-6 bg-gray-100 dark:bg-gray-900/50 rounded-lg">
+            <h2 className="text-xl font-semibold mb-4">Generated Song Ideas</h2>
+            <div className="space-y-4">
+              {ideas.map((idea, index) => (
+                <div
+                  key={index}
+                  className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
+                >
+                  <h3 className="text-lg font-semibold text-primary mb-2">
+                    {idea.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    {idea.concept}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }
 

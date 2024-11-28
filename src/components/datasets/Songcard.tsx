@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { DollarSign } from 'lucide-react';
 import Link from 'next/link';
 import PlayButton from '@/src/components/buttons/PlayButton';
+import { songLinks } from '@/src/lib/songs';
+
 
 interface Song {
   id: number;
@@ -22,31 +24,7 @@ interface SongCardProps {
 }
 
 // Define songLinks as a constant dictionary mapping IDs to URLs
-const songLinks: Record<number, string> = {
-  1: "https://storage.googleapis.com/lunarboom-music/Completesongs/Canyoubelieveit%20SNIPPET.wav",
-  2: "https://storage.googleapis.com/lunarboom-music/Completesongs/TimesUp-kopi.wav",
-  3: "https://storage.googleapis.com/lunarboom-music/Completesongs/Donotgiveup-snip.wav",
-  4: "https://storage.googleapis.com/lunarboom-music/Completesongs/tropicanos_snippppet.wav",
-  5: "https://storage.googleapis.com/lunarboom-music/Completesongs/sunny%20lofi_snipp.wav",
-  6: "https://storage.googleapis.com/lunarboom-music/Completesongs/monkey%20tunes_snip.wav",
-  7:"https://storage.googleapis.com/lunarboom-music/Completesongs/beachy%20lofi_snip.wav",
-  8:"https://storage.googleapis.com/lunarboom-music/Completesongs/Gingerbread%20tunes%20SNippet.wav",
-  9:"https://storage.googleapis.com/lunarboom-music/Completesongs/Glu%CC%88hwein%20Nights%20snippet.wav",
-  10:"https://storage.googleapis.com/lunarboom-music/Completesongs/Warm%20Darkness%20snippet.wav",
-  11:"https://storage.googleapis.com/lunarboom-music/Completesongs/Soft%20Snow%20snippet.wav",
-  12:"https://storage.googleapis.com/lunarboom-music/Completesongs/Fireplace%20Heat%20snippet.wav",
-  13:"https://storage.googleapis.com/lunarboom-music/Completesongs/Gliese%2012%20b%20snip.wav",
-  14:"https://storage.googleapis.com/lunarboom-music/Completesongs/Kepler-22b%20snip.wav",
-  15:"https://storage.googleapis.com/lunarboom-music/Completesongs/Luyten%20b%20snip.wav",
-  16:"https://storage.googleapis.com/lunarboom-music/Completesongs/Ross%20128%20b%20snip.wav",
-  17:"https://storage.googleapis.com/lunarboom-music/Completesongs/earth%20snip.wav",
-  18:"https://storage.googleapis.com/lunarboom-music/Completesongs/Mars%20snip.wav",
 
-
-  
-
-  // Add more entries as needed
-};
 
 const SongCard: React.FC<SongCardProps> = ({ song, currentlyPlaying, setCurrentlyPlaying }) => {
   return (

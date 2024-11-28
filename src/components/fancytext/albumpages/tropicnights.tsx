@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import SongsList from '@/src/lib/SongList'
+
 
 
 const Tropic: React.FC = () => {
@@ -9,7 +9,7 @@ const Tropic: React.FC = () => {
       
       <div>
 
-        <SongsList></SongsList>
+        
       </div>
     </section>
   )
