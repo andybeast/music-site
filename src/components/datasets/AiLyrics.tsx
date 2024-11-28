@@ -9,10 +9,17 @@ interface AISession {
   promptStreaming: (prompt: string) => AsyncIterable<string>;
 }
 
+interface ModelCapabilities {
+  supportedLanguages: string[];
+  features: string[];
+  [key: string]: unknown; // Add other properties as needed
+}
+
 interface AILanguageModel {
-  capabilities: () => Promise<any>;
+  capabilities: () => Promise<ModelCapabilities>;
   create: (options: { temperature: number; topK: number }) => Promise<AISession>;
 }
+
 
 interface AIInterface {
   languageModel: AILanguageModel;
