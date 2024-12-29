@@ -79,7 +79,7 @@ const YouTubeSection: React.FC = () => {
     return (
         <SocialSection
             title="YouTube"
-            gradient="bg-gradient-to-r from-red-500 to-red-400"
+            gradient="bg-gradient-to-r from-zinc-900 to-red-800"
             imageSrc="https://i.ibb.co/VNSXRDx/vecteezy-youtube-logo-png-youtube-icon-transparent-18930572.png"
             description="Check out what Lunar Boom has to offer on YouTube"
         >
@@ -116,7 +116,7 @@ const YouTubeSection: React.FC = () => {
 const TikTokSection: React.FC = () => (
     <SocialSection
         title="TikTok"
-        gradient="bg-gradient-to-r from-black via-gray-900 to-gray-700"
+        gradient="bg-gradient-to-r from-black via-zinc-900 to-zinc-700"
         imageSrc="https://i.ibb.co/Vtd28GY/Tiktok-logo.png"
         description=""
     >
@@ -166,7 +166,7 @@ const TikTokSection: React.FC = () => (
 const InstaSection: React.FC = () => (
     <SocialSection
         title="Instagram"
-        gradient="bg-gradient-to-r from-pink-500 via-pink-700 to-pink-800"
+        gradient="bg-gradient-to-r from-zinc-900 via-zinc-700 to-pink-800"
         imageSrc="https://i.ibb.co/ZWCZzWL/insta-logo.png"
         description="Stay updated with our latest photos and stories"
     >

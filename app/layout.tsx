@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import './globals.css'
+import { CartProvider } from '@/src/components/datasets/CartContext'
 
 import { Music, Search, InfoIcon } from 'lucide-react'
 import Image from 'next/image'
@@ -9,6 +10,7 @@ import Link from 'next/link'
 import Footer from '@/src/components/fancytext/Footer'
 import LoginButton from '@/src/components/buttons/Login'
 import HeaderButton from '@/src/components/buttons/HeaderButton'
+import ShoppingCartLink from '@/src/components/buttons/ShoppingCart'
 
 
 export default function RootLayout({
@@ -39,6 +41,8 @@ export default function RootLayout({
         className="text-gray-900 flex flex-col min-h-screen"
         style={{ position: 'relative' }} // Add this line
       >
+
+        <CartProvider>
         <header
           className={`bg-zinc-900/80 shadow-lg transition-all duration-500 ease-out ${isScrolled ? 'backdrop-blur-md' : 'backdrop-blur-none'
             }`}
@@ -68,32 +72,39 @@ export default function RootLayout({
 
              
               <nav>
+                <div className="flex gap-8">
                 <div className="hidden sm:flex gap-16 mt-4">
                   
                   
-                  <HeaderButton text="About" href= "/info" color="#B91C1C"/>
+                  <HeaderButton text="About" href= "/info" color="#EAB308"/>
                   
-                  <HeaderButton text="Community" href= "/community" color="#15803D"/>
+                  <HeaderButton text="Community" href= "/community" color="#EAB308"/>
                  
-                  <HeaderButton text="MusAI" href= "/ai" color="#1D4ED8"/>
+                  <HeaderButton text="MusAI" href= "/ai" color="#EAB308"/>
                  
-                  <HeaderButton text="Browse" href= "/browse" color="#F59E0B"/>
+                  <HeaderButton text="Browse" href= "/browse" color="#EAB308"/>
                  
-                  <HeaderButton text="Contact" href= "/contact" color="#15803D"/>
+                  <HeaderButton text="Contact" href= "/contact" color="#EAB308"/>
                   
-                  <LoginButton
-                      href="/login"
-                      label="Login"
-                      width="100px"
-                      height="33px"
-                      startColor="#A9A9A9"
-                      endColor="#C0C0C0"
-                    />
+                  
                 
 
                 </div>
-                
+                <div className="mt-3">
+                <LoginButton
+                      
+                      
+                      width="100px"
+                      height="33px"
+                      startColor="#EAB308"
+                      endColor="#FDE047"
+                      
+                    />
+                 
+                    <ShoppingCartLink/>
+               </div>
 
+               </div>
 
                 {/* Mobile Navigation */}
                 <div className="sm:hidden flex items-center">
@@ -118,9 +129,11 @@ export default function RootLayout({
           </div>
         </header>
 
+          
         <main className="w-full">{children}</main>
-
+        
         <Footer />
+        </CartProvider>
       </body>
     </html>
   )

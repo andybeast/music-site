@@ -18,7 +18,7 @@ const HeaderButton: React.FC<HeaderButtonProps> = ({
   return (
     <Link href={href} passHref>
       <motion.span
-        className="relative py-2 text-lg font-bold text-gray-100 hover:text-white transition-colors duration-200 ease-in-out cursor-pointer group"
+        className="relative py-2 text-lg font-bold text-yellow-400 hover:text-white transition-colors duration-200 ease-in-out cursor-pointer group"
         whileHover="hover"
         initial="rest"
         animate="rest"

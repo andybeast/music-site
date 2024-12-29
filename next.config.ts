@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
         hostname: "i.postimg.cc",
         pathname: "/**", // Matches all paths under this domain
       },
+        {
+          protocol: 'https',
+          hostname: 'lh3.googleusercontent.com', 
+          pathname: '/a-/**', // Google profile image domain thing
+        },
     ],
   },
   webpack: (config) => {

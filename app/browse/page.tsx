@@ -9,7 +9,7 @@ export default function Browse() {
     
       
       
-      <div className="flex justify-center bg-gradient-to-br from-zinc-500 to-zinc-900 relative z-0">
+      <div className="flex justify-center bg-gradient-to-br from-zinc-700 to-zinc-1000 relative z-0">
         {/* Add the SongsList component here */}
         <SongsList />
       </div>
