@@ -61,9 +61,9 @@ export interface Song {
       image: "https://i.ibb.co/4swsR48/Designer-1.jpg",
       link: "albums/tropicnights",
       album: "Tropic Nights",
-      strength: 3,
+      strength: 2,
       genres: ["Pop","R&B"],
-      price: 3,
+      price: 2,
       lenght: "3:03",
 
     },
@@ -84,9 +84,9 @@ export interface Song {
       image: "https://i.ibb.co/4swsR48/Designer-1.jpg",
       link: "albums/tropicnights",
       album: "Tropic Nights",
-      strength: 3,
+      strength: 2,
       genres: ["Pop","R&B"],
-      price: 3,
+      price: 2,
       lenght:"1:17",
     },
     {
@@ -117,9 +117,9 @@ export interface Song {
       image: "https://i.ibb.co/DQrg0Xc/LUnar-Boom.jpg",
       link: "albums/lofireggae",
       album: "Lofi Reggae",
-      strength: 1,
+      strength: 1.99,
       genres: ["Lofi", "Reggae"],
-      price: 1,
+      price: 1.99,
       lenght:"3:59",
     },
     {
@@ -141,7 +141,7 @@ export interface Song {
       album: "Christmas Lofi",
       strength: 0.99,
       genres: ["Lofi", "R&B", "Christmas"],
-      price: 0.99,
+      price: 0,
       lenght:"1:17",
     },
     {
@@ -152,7 +152,7 @@ export interface Song {
       album: "Christmas Lofi",
       strength: 0.99,
       genres: ["Lofi", "R&B", "Christmas"],
-      price: 0.99,
+      price: 0,
       lenght:"1:49",
     },
     {
@@ -163,7 +163,7 @@ export interface Song {
       album: "Christmas Lofi",
       strength: 0.99,
       genres: ["Lofi", "R&B", "Christmas"],
-      price: 0.99,
+      price: 0,
       lenght:"3:59",
     },
     {
@@ -174,7 +174,7 @@ export interface Song {
       album: "Christmas Lofi",
       strength: 0.99,
       genres: ["Lofi", "R&B", "Christmas"],
-      price: 0.99,
+      price: 0,
       lenght:"1:04",
     },
     {
@@ -185,7 +185,7 @@ export interface Song {
       album: "Christmas Lofi",
       strength: 1.5,
       genres: ["Lofi", "R&B", "Christmas"],
-      price: 1.5,
+      price: 0,
       lenght:"1:03",
     },
     {
@@ -196,7 +196,7 @@ export interface Song {
       album: "Planetary Lofi",
       strength: 0.99,
       genres: ["Lofi", "R&B", "Electro"],
-      price: 0.99,
+      price: 0,
       lenght: "2:26",
     },
     {
@@ -207,7 +207,7 @@ export interface Song {
       album: "Planetary Lofi",
       strength: 0.99,
       genres: ["Lofi", "R&B", "Electro"],
-      price: 0.99,
+      price: 0,
       lenght:"2:01",
     },
     {
@@ -218,7 +218,7 @@ export interface Song {
       album: "Planetary Lofi",
       strength: 0.99,
       genres: ["Lofi", "R&B", "Electro"],
-      price: 0.99,
+      price: 0,
       lenght:"2:03",
     },
     {
@@ -229,7 +229,7 @@ export interface Song {
       album: "Planetary Lofi",
       strength: 0.99,
       genres: ["Lofi", "R&B", "Electro"],
-      price: 0.99,
+      price: 0,
       lenght:"3:59",
     },
     {
@@ -240,7 +240,7 @@ export interface Song {
       album: "Planetary Lofi",
       strength: 1,
       genres: ["Lofi", "R&B", "Electro"],
-      price: 1,
+      price: 0,
       lenght:"2:52",
     },
     {
@@ -251,7 +251,7 @@ export interface Song {
       album: "Planetary Lofi",
       strength: 1,
       genres: ["Lofi", "R&B", "Electro"],
-      price: 1,
+      price: 0,
       lenght:"3:59",
     },
   ];

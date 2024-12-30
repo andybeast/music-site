@@ -4,6 +4,6 @@
 import Christmas from "@/src/components/fancytext/albumpages/christmaslofi";
 
 
-export default function RaggaeLofi() {
+export default function ChristmasLofi() {
   return <Christmas />;
 }

@@ -101,9 +101,9 @@ export default function RootLayout({
                       
                     />
                  
-                    <ShoppingCartLink/>
+                    
                </div>
-
+               <ShoppingCartLink/>
                </div>
 
                 {/* Mobile Navigation */}

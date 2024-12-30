@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { songs } from './songs'
 import Image from 'next/image'
 import SongRow from './Songrow'
@@ -9,7 +9,9 @@ import ChartIcon from '@/src/components/ui/chart';
 import InfoBoxIcon from '@/src/components/ui/info';
 import LeaveReview from '../components/fancytext/albumpages/review'
 import YouMayAlsoLike from '../components/datasets/YoumayLike'
-import AddToCartButton from '../components/buttons/AddtoChart'
+import AlbumSection from '../components/datasets/AlbumSection'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface AlbumDisplayProps {
     albumName: string
@@ -18,6 +20,10 @@ interface AlbumDisplayProps {
 
 export const AlbumDisplay: React.FC<AlbumDisplayProps> = ({ albumName, className = "" }) => {
     const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null)
+    const [remainingDownloads, setRemainingDownloads] = useState<number | null>(null)
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true) // Assume logged in initially
+    const [error, setError] = useState<string | null>(null)
+    const router = useRouter()
 
     const albumSongs = useMemo(() => {
         return songs.filter(song => song.album.toLowerCase() === albumName.toLowerCase())
@@ -27,6 +33,36 @@ export const AlbumDisplay: React.FC<AlbumDisplayProps> = ({ albumName, className
         return albums.find(album => album.title.toLowerCase() === albumName.toLowerCase());
     }, [albumName]);
 
+    useEffect(() => {
+        const fetchUserDownloads = async () => {
+            try {
+                const response = await fetch('/api/user-downloads');
+                if (response.status === 401 || response.status === 404) {
+                    setIsLoggedIn(false);
+                    setRemainingDownloads(null);
+                    router.push('/login');
+                    return;
+                }
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user downloads');
+                }
+                const data = await response.json();
+                setRemainingDownloads(data.remainingDownloads);
+            } catch (error) {
+                console.error('Error fetching remaining downloads:', error);
+                setError('An error occurred while fetching download information. Please try again later.');
+                setRemainingDownloads(null);
+            }
+        };
+
+        fetchUserDownloads();
+    }, [router]);
+
+    const handleDownloadComplete = (downloadedCount: number) => {
+        setRemainingDownloads(prevRemaining => 
+            prevRemaining !== null ? Math.max(0, prevRemaining - downloadedCount) : null
+        );
+    };
 
     if (albumSongs.length === 0) {
         return (
@@ -37,6 +73,7 @@ export const AlbumDisplay: React.FC<AlbumDisplayProps> = ({ albumName, className
     }
 
     const albumImageUrl = albumSongs[0]?.image || ''
+
 
     return (
         <div className={`bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-800 rounded-lg shadow-lg ${className}`}>
@@ -141,13 +178,31 @@ export const AlbumDisplay: React.FC<AlbumDisplayProps> = ({ albumName, className
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
 
-                    <div className="text-center border text-white p-6 rounded-lg shadow-md hover:bg-zinc-600 transition-colors duration-200 cursor-pointer">
-                        <h3 className="text-3xl text-yellow-500 font-bold mb-2">Buy Album</h3>
-                        <p className="text-gray-100">Purchase the entire album and enjoy all the tracks.</p>
-                        {albumDetails && (
-                          <AddToCartButton item={{ id: albumDetails.id, name: albumDetails.title, price: albumDetails.price, attribute: albumDetails.attribute, }} />
-                        )}
-                    </div>
+                {albumDetails && (
+                        isLoggedIn ? (
+                            error ? (
+                                <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                                    <p className="font-bold">Error</p>
+                                    <p>{error}</p>
+                                </div>
+                            ) : remainingDownloads !== null ? (
+                                <AlbumSection 
+                                    albumDetails={albumDetails} 
+                                    remainingDownloads={remainingDownloads}
+                                    onDownloadComplete={handleDownloadComplete}
+                                />
+                            ) : (
+                                <p className="text-yellow-500">Loading download information...</p>
+                            )
+                        ) : (
+                            <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
+                                <p className="font-bold">Not Logged In</p>
+                                <p>Please <Link href="/login" className="underline">log in</Link> to see your remaining downloads and access free songs.</p>
+                            </div>
+                        )
+                    )}
+
+                    
 
 
                     <div className="border text-center text-white p-6 rounded-lg shadow-md hover:bg-zinc-600 transition-colors duration-200 cursor-pointer">
@@ -160,7 +215,7 @@ export const AlbumDisplay: React.FC<AlbumDisplayProps> = ({ albumName, className
             <LeaveReview></LeaveReview>
 
             <YouMayAlsoLike currentAlbumTitle={albumName} />
-            
+
 
 
         </div>

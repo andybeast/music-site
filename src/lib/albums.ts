@@ -10,6 +10,7 @@ export interface Album {
     image: string;
     link: string;
     attribute: string;
+    songs: string[];
 }
 
 
@@ -25,7 +26,8 @@ export const albums: Album[] = [
         topsong: "Time's Up",
         image: "https://i.ibb.co/4swsR48/Designer-1.jpg",
         link: "albums/tropicnights",
-        attribute: "EP"
+        attribute: "EP",
+        songs: ["times up", "believe it", "or not"]
     },
     {
         id: 2,
@@ -38,35 +40,38 @@ export const albums: Album[] = [
         topsong: "Monkey Tunes",
         image: "https://i.ibb.co/DQrg0Xc/LUnar-Boom.jpg",
         link: "albums/lofireggae",
-        attribute: "EP"
+        attribute: "EP",
+        songs: ["tropicanos", "sunny lofi", "monkey tunes", "beachy lofi"]
     },
 
     {
         id: 3,
         title: "Planetary Lofi",
         genres: ["Lofi", "RnB", "Electro"],
-        price: 5,
+        price: 0,
         lenght: "17:20",
         description: "Planetary Lofi is a cosmic journey through soothing space-inspired lofi beats. With ethereal melodies, ambient textures, and a weightless vibe, this album captures the feeling of floating among the stars. Perfect for stargazing, deep focus, or simply escaping to the vastness of the universe.",
         releaseDate: "2024-11-14",
         topsong: "mars",
         image: "https://i.ibb.co/TvxymD5/soft-shadow.jpg",
         link: "albums/planetarylofi",
-        attribute: "EP"   
+        attribute: "EP",
+        songs: ["gliese 12b","kepler 22b", "luyten b", "ross 128b", "earth", "mars" ]  
     },
 
     {
         id: 4,
         title: "Christmas Lofi",
         genres: ["Lofi"],
-        price: 6,
+        price: 0,
         lenght: "12:04",
         description: "Christmas Lofi wraps you in a cozy blanket of festive lofi beats, blending the warmth of holiday classics with a chill, modern vibe. With gentle jingles, soft piano, and snowy ambience, this album is perfect for sipping hot cocoa, decorating the tree, or simply relaxing by the fire this holiday season.",
         releaseDate: "2024-11-14",
         topsong: "Warm Darkness",
         image: "https://i.ibb.co/YDxMFz8/LUnar-Boom.jpg",
         link: "albums/christmaslofi",
-        attribute: "EP"   
+        attribute: "EP",
+        songs: ["warm darkness", "gingerbread tunes", "glühwein nights", "soft snow", "fireplace heat"]
     },
 
 ]

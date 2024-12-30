@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FaChartBar, FaUser, FaCog } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import UserDownloadStats from '@/src/components/datasets/UserDownloadStats';
 
 const dashboardItems = [
   { id: 1, name: 'Overview', icon: <FaChartBar />, description: 'View key metrics and performance.' },
@@ -18,30 +19,43 @@ interface UserInfo {
   age?: number;
   gender?: string;
   favoriteMusic?: string;
+  downloadCount?: number;
 }
+
+const MAX_FREE_DOWNLOADS = 20;
 
 export default function Dashboard() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<UserInfo>>({});
+  const [error, setError] = useState<string | null>(null);
+  const [remainingDownloads, setRemainingDownloads] = useState(MAX_FREE_DOWNLOADS);
 
   useEffect(() => {
-    async function fetchUserInfo() {
-      try {
-        const response = await fetch('/api/user-info');
-        if (!response.ok) {
-          throw new Error('Failed to fetch user info');
-        }
-        const data = await response.json();
-        setUserInfo(data);
-        setFormData(data);
-      } catch (error) {
-        console.error('Error fetching user info:', error);
-      }
-    }
-
     fetchUserInfo();
   }, []);
+
+  async function fetchUserInfo() {
+    try {
+      const response = await fetch('/api/user-info');
+      if (response.status === 401) {
+        setError('Your session has expired. Please log in again.');
+        setUserInfo(null);
+        return;
+      }
+      if (!response.ok) {
+        throw new Error('Failed to fetch user info');
+      }
+      const data = await response.json();
+      setUserInfo(data);
+      setFormData(data);
+      setRemainingDownloads(MAX_FREE_DOWNLOADS - (data.downloadCount || 0));
+      setError(null);
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+      setError('An error occurred while fetching your information.');
+    }
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -66,6 +80,7 @@ export default function Dashboard() {
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating user info:', error);
+      setError('Failed to update user information. Please try again.');
     }
   };
 
@@ -81,6 +96,37 @@ export default function Dashboard() {
           Welcome to Your <span className="text-yellow-400">Dashboard</span>
         </motion.h1>
 
+        {error && (
+          <motion.div
+            className="bg-red-500 text-white p-4 rounded-lg mb-8 flex justify-between items-center"
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <p>{error}</p>
+            <button
+              onClick={() => {
+                window.location.href = '/api/auth/signin';
+              }}
+              className="bg-white text-red-500 px-4 py-2 rounded hover:bg-red-100 transition-colors"
+            >
+              Log In
+            </button>
+          </motion.div>
+        )}
+
+        <motion.div
+          className="mb-8"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <UserDownloadStats
+            remainingDownloads={remainingDownloads}
+            totalDownloads={MAX_FREE_DOWNLOADS - remainingDownloads}
+          />
+        </motion.div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
           {dashboardItems.map((item, index) => (
             <motion.div
@@ -88,7 +134,7 @@ export default function Dashboard() {
               className="bg-zinc-800 rounded-lg shadow-lg p-8"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 + index * 0.1 }}
+              transition={{ duration: 0.8, delay: 0.4 + index * 0.1 }}
             >
               <div className="flex items-center mb-4">
                 <div className="text-yellow-400 text-2xl mr-3">{item.icon}</div>
