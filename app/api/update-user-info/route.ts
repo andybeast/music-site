@@ -1,27 +1,28 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { ServerAuthService } from '@/src/services/serverauthService'
-import { saveUserInfo } from '@/src/lib/users'
+import { NextRequest, NextResponse } from 'next/server';
+import { ServerAuthService } from '@/src/services/serverauthService';
+import { updateUserInfo } from '@/src/lib/users';
 
 export async function POST(request: NextRequest) {
   try {
-    const accessToken = await ServerAuthService.getAccessToken()
+    const accessToken = await ServerAuthService.getAccessToken();
 
     if (!accessToken) {
-      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const userData = await request.json()
+    const userData = await request.json();
 
-    // Save user info to MongoDB
-    const updatedUser = await saveUserInfo(userData)
+    if (!userData.email) {
+      return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+    }
 
-    // Ensure the updatedUser is serializable
-    const serializableUser = JSON.parse(JSON.stringify(updatedUser))
+    // Update user info in MongoDB
+    const updatedUser = await updateUserInfo(userData.email, userData);
 
-    return NextResponse.json(serializableUser)
+    return NextResponse.json(updatedUser);
   } catch (error) {
-    console.error('Error updating user info:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('Error updating user info:', error);
+    return NextResponse.json({ error: 'An error occurred while updating user info' }, { status: 500 });
   }
 }
 

@@ -2,14 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ServerAuthService } from '@/src/services/serverauthService';
 import { getUserInfo } from '@/src/lib/users';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
+  console.log('Received request to /api/user-info');
   try {
     const accessToken = await ServerAuthService.getAccessToken();
 
     if (!accessToken) {
+      console.log('No access token found');
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
+    console.log('Fetching user info from Google');
     const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -18,28 +21,30 @@ export async function GET(request: NextRequest) {
 
     if (!response.ok) {
       console.error('Google API response:', await response.text());
-      throw new Error(`Failed to fetch user info: ${response.status} ${response.statusText}`);
+      throw new Error(`Failed to fetch user info from Google: ${response.status} ${response.statusText}`);
     }
 
     const googleUserData = await response.json();
+    console.log('Received user data from Google:', googleUserData.email);
 
-    // Fetch user info from MongoDB
+    console.log('Fetching user info from MongoDB');
     const userInfo = await getUserInfo(googleUserData.email);
 
     if (!userInfo) {
-      throw new Error('User not found in database');
+      console.log('User not found in database');
+      return NextResponse.json({ error: 'User not found in database' }, { status: 404 });
     }
 
+    console.log('Successfully fetched user info');
     return NextResponse.json(userInfo);
-  } catch (error) {
-    console.error('Error fetching user info:', error);
-
-    // Type guard for error instance
+  } catch (error: unknown) {
+    console.error('Error in /api/user-info:', error);
+    
     if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: 'An error occurred while fetching user info', details: error.message }, { status: 500 });
+    } else {
+      return NextResponse.json({ error: 'An unknown error occurred while fetching user info' }, { status: 500 });
     }
-
-    // Handle unknown error types
-    return NextResponse.json({ error: 'An unexpected error occurred' }, { status: 500 });
   }
 }
+

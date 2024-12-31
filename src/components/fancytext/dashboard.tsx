@@ -20,6 +20,7 @@ interface UserInfo {
   gender?: string;
   favoriteMusic?: string;
   downloadCount?: number;
+  remainingDownloads?: number;
 }
 
 const MAX_FREE_DOWNLOADS = 20;
@@ -29,7 +30,6 @@ export default function Dashboard() {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<UserInfo>>({});
   const [error, setError] = useState<string | null>(null);
-  const [remainingDownloads, setRemainingDownloads] = useState(MAX_FREE_DOWNLOADS);
 
   useEffect(() => {
     fetchUserInfo();
@@ -46,10 +46,9 @@ export default function Dashboard() {
       if (!response.ok) {
         throw new Error('Failed to fetch user info');
       }
-      const data = await response.json();
+      const data: UserInfo = await response.json();
       setUserInfo(data);
       setFormData(data);
-      setRemainingDownloads(MAX_FREE_DOWNLOADS - (data.downloadCount || 0));
       setError(null);
     } catch (error) {
       console.error('Error fetching user info:', error);
@@ -75,7 +74,7 @@ export default function Dashboard() {
       if (!response.ok) {
         throw new Error('Failed to update user info');
       }
-      const updatedData = await response.json();
+      const updatedData: UserInfo = await response.json();
       setUserInfo(updatedData);
       setIsEditing(false);
     } catch (error) {
@@ -115,17 +114,19 @@ export default function Dashboard() {
           </motion.div>
         )}
 
-        <motion.div
-          className="mb-8"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          <UserDownloadStats
-            remainingDownloads={remainingDownloads}
-            totalDownloads={MAX_FREE_DOWNLOADS - remainingDownloads}
-          />
-        </motion.div>
+        {userInfo && (
+          <motion.div
+            className="mb-8"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <UserDownloadStats
+              remainingDownloads={userInfo.remainingDownloads ?? MAX_FREE_DOWNLOADS}
+              totalDownloads={userInfo.downloadCount ?? 0}
+            />
+          </motion.div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
           {dashboardItems.map((item, index) => (
