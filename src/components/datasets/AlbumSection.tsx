@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import FreeDownloadButton from '../buttons/Freedownloadbutton';
 import AddToCartButton from '../buttons/AddtoChart';
 import AlbumSongSelector from './AlbumSongSelector';

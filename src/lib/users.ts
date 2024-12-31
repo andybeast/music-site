@@ -1,8 +1,13 @@
-import { MongoClient, Db, Collection, Document, MongoClientOptions, UpdateFilter } from 'mongodb';
+import { MongoClient, Db, Collection, MongoClientOptions, UpdateFilter } from 'mongodb';
 
 declare global {
-  var _mongoClientPromise: Promise<MongoClient> | undefined;
+  namespace NodeJS {
+    interface Global {
+      _mongoClientPromise: Promise<MongoClient> | undefined;
+    }
+  }
 }
+let _mongoClientPromise: Promise<MongoClient> | undefined;
 
 // Define the User interface
 interface User {
@@ -10,6 +15,7 @@ interface User {
   name?: string;
   age?: number;
   favoriteMusic?: string;
+  gender?: string;
   createdAt: Date;
   updatedAt: Date;
   downloadCount: number;
@@ -27,15 +33,20 @@ let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
 if (process.env.NODE_ENV === 'development') {
-  if (!global._mongoClientPromise) {
+  // In development mode, use a global variable so that the value
+  // is preserved across module reloads caused by HMR (Hot Module Replacement).
+  if (!_mongoClientPromise) {
     client = new MongoClient(uri, options);
-    global._mongoClientPromise = client.connect();
+    _mongoClientPromise = client.connect();
   }
-  clientPromise = global._mongoClientPromise;
+  clientPromise = _mongoClientPromise;
 } else {
+  // In production mode, it's best to not use a global variable.
   client = new MongoClient(uri, options);
   clientPromise = client.connect();
 }
+export default clientPromise;
+
 
 const MAX_FREE_DOWNLOADS = 20;
 
@@ -93,7 +104,7 @@ export async function updateUserInfo(email: string, updateData: Partial<User>): 
     const db: Db = client.db("your_database_name");
     const users: Collection<User> = db.collection("users");
 
-    const allowedFields: (keyof User)[] = ['age', 'name', 'favoriteMusic'];
+    const allowedFields: (keyof User)[] = ['age', 'name', 'favoriteMusic', 'gender'];
     const filteredUpdateData = Object.keys(updateData)
       .filter(key => allowedFields.includes(key as keyof User))
       .reduce((obj, key) => {

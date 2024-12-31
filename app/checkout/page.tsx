@@ -6,6 +6,36 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/src/components/datasets/CartContext';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { useCustomId } from '@/src/hooks/useCustomId';
+import { OnApproveData, OnApproveActions } from '@paypal/paypal-js';
+
+interface PayPalOrderDetails {
+  id: string;
+  status?: string;
+  purchase_units?: Array<{
+    payments?: {
+      captures?: Array<{
+        id: string;
+        status?: string;
+        amount?: {
+          currency_code?: string;
+          value?: string;
+        };
+        custom_id?: string;
+      }>;
+    };
+    custom_id?: string;
+  }>;
+  payer?: {
+    name?: {
+      given_name?: string;
+      surname?: string;
+    };
+    email_address?: string;
+    payer_id?: string;
+  };
+  create_time?: string;
+  update_time?: string;
+}
 
 export default function CheckoutPage() {
   const { cartItems, clearCart } = useCart();
@@ -52,13 +82,17 @@ export default function CheckoutPage() {
     }
   };
 
-  const onApprove = async (data: any, actions: any) => {
+  const onApprove = async (data: OnApproveData, actions: OnApproveActions) => {
     console.log('Payment approved, capturing order...', data);
     setIsProcessing(true);
     try {
-      const details = await actions.order.capture();
-      console.log('Order captured:', details);
-      await handlePaymentSuccess(details);
+      if (actions.order) {
+        const details = await actions.order.capture();
+        console.log('Order captured:', details);
+        await handlePaymentSuccess(details as PayPalOrderDetails);
+      } else {
+        throw new Error('Order actions not available');
+      }
     } catch (error) {
       console.error('Error capturing order:', error);
       setError('Failed to process payment. Please try again.');
@@ -67,20 +101,14 @@ export default function CheckoutPage() {
     }
   };
 
-  const handlePaymentSuccess = async (details: any) => {
+  const handlePaymentSuccess = async (details: PayPalOrderDetails) => {
     console.log('handlePaymentSuccess called with details:', details);
     clearCart();
 
     try {
       let customId = details.purchase_units?.[0]?.payments?.captures?.[0]?.custom_id
         || details.purchase_units?.[0]?.custom_id
-        || details.custom_id
         || details.id;
-
-      if (!customId) {
-        console.warn('CustomId not found in payment details, using order ID as fallback');
-        customId = details.id;
-      }
 
       console.log('Storing customId:', customId);
       await saveCustomId(customId);
